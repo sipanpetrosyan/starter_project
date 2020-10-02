@@ -1,0 +1,147 @@
+import 'package:flutter/material.dart';
+import 'package:igroove_ui/managment/const_variables.dart';
+
+class ForgotPassPage extends StatefulWidget {
+  @override
+  _ForgotPassPageState createState() => _ForgotPassPageState();
+}
+
+class _ForgotPassPageState extends State<ForgotPassPage> {
+  String _email, _password;
+  ConstVariables constVariables;
+
+  @override
+  Widget build(BuildContext context) {
+    constVariables = ConstVariables(context: context);
+    return Scaffold(
+      body: forgotContent(),
+    );
+  }
+
+  Widget forgotContent() {
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: SingleChildScrollView(
+        child: Container(
+          height: constVariables.screenHeight,
+          width: constVariables.screenWidth,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/images/Login – 1.png"),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: Padding(
+            padding: EdgeInsets.only(
+                left: constVariables.screenWidth * 0.1,
+                right: constVariables.screenWidth * 0.1,
+                top: constVariables.screenWidth * 0.3),
+            child: Column(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: 60,
+                      width: 60,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image:
+                              AssetImage("assets/images/newwave-logo-icon.png"),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 65, bottom: 10),
+                      child: Text(
+                        'Forgot your password?',
+                        style: TextStyle(
+                          fontSize: 21,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                          fontFamily: "Montserrat",
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 25),
+                      child: Text(
+                        'Please enter your email address and we will send you a new password.',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontFamily: "Montserrat",
+                        ),
+                      ),
+                    ),
+                    Theme(
+                      data: ThemeData(
+                        primaryColor: Colors.white,
+                        inputDecorationTheme: InputDecorationTheme(
+                          labelStyle: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      child: TextFormField(
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontFamily: "Montserrat",
+                        ),
+                        decoration: InputDecoration(
+                          labelText: 'Email',
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 130, 130, 130)),
+                          ),
+                        ),
+                        onChanged: (input) => _email = input,
+                      ),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding:
+                      EdgeInsets.only(top: constVariables.screenWidth * 0.3),
+                  child: ButtonTheme(
+                    minWidth: constVariables.screenWidth,
+                    height: 50,
+                    child: RaisedButton(
+                      color: Color.fromARGB(255, 232, 107, 44),
+                      textColor: Colors.white,
+                      onPressed: () {},
+                      child: Text(
+                        "Request new password",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontFamily: "Montserrat",
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 50),
+                  child: GestureDetector(
+                    child: Text(
+                      'Back to Login',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 17,
+                        fontFamily: "Montserrat",
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
