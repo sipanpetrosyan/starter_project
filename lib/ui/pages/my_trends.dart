@@ -41,12 +41,28 @@ class _MyTrendsState extends State<MyTrends> {
 
   @override
   void initState() {
+    indexDateDrop = 1;
     indexDropdown = 0;
     titleReleases = listReleases[0];
-    indexDateDrop = 0;
 
     super.initState();
   }
+
+  List<String> mountList = [
+    '',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec'
+  ];
 
   static DateTime nowDate = DateTime.now();
   int nowDay = nowDate.day;
@@ -54,19 +70,21 @@ class _MyTrendsState extends State<MyTrends> {
   int nowYear = nowDate.year;
   int oldDay = nowDate.day + 1;
   int oldMonth = (nowDate.month != 1) ? nowDate.month - 1 : 12;
-  int oldYear = nowDate.year;
+  int oldYear = (nowDate.month == 1 && nowDate.day < 30)
+      ? nowDate.year - 1
+      : nowDate.year;
 
   Size _getSizes() {
     final RenderBox renderBoxTop = _globalKey.currentContext.findRenderObject();
     final sizeTop = renderBoxTop.size;
-    print("SIZE of Top: $sizeTop");
+    // print("SIZE of Top: $sizeTop");
     return sizeTop;
   }
 
   Offset _getPositions() {
     final RenderBox renderBoxTop = _globalKey.currentContext.findRenderObject();
     final positionTop = renderBoxTop.localToGlobal(Offset.zero);
-    print("ПОЛОЖЕНИЕ Top: $positionTop");
+    // print("ПОЛОЖЕНИЕ Top: $positionTop");
     return positionTop;
   }
 
@@ -74,7 +92,7 @@ class _MyTrendsState extends State<MyTrends> {
     final RenderBox renderBoxTop =
         _globalKeyReleases.currentContext.findRenderObject();
     final sizeTop = renderBoxTop.size;
-    print("SIZE of Top: $sizeTop");
+    // print("SIZE of Top: $sizeTop");
     return sizeTop;
   }
 
@@ -82,7 +100,7 @@ class _MyTrendsState extends State<MyTrends> {
     final RenderBox renderBoxTop =
         _globalKeyReleases.currentContext.findRenderObject();
     final positionTop = renderBoxTop.localToGlobal(Offset.zero);
-    print("ПОЛОЖЕНИЕ Top: $positionTop");
+    // print("ПОЛОЖЕНИЕ Top: $positionTop");
     return positionTop;
   }
 
@@ -184,7 +202,7 @@ class _MyTrendsState extends State<MyTrends> {
               padding: const EdgeInsets.symmetric(vertical: 4),
               child: Container(
                 child: Text(
-                  '$oldDay. $oldMonth $oldYear - $nowDay. $nowMonth $nowYear',
+                  '$oldDay. ${mountList[oldMonth]} $oldYear - $nowDay. ${mountList[nowMonth]} $nowYear',
                   style: TextStyle(
                     fontFamily: "Montserrat",
                     color: Color.fromARGB(255, 244, 129, 79),
@@ -465,10 +483,20 @@ class _MyTrendsState extends State<MyTrends> {
               child: GestureDetector(
                 behavior: HitTestBehavior.translucent,
                 onTap: () {
-                  print('index- ${index}');
+                  // print('index2- ${index}');
                   Navigator.of(context).pop(index);
 
-                  if (numberDialog == 1 && index == count - 1) {
+                  if (numberDialog == 1 && index == 0) {
+                    _lastWeekDate();
+                  } else if (numberDialog == 1 && index == 1) {
+                    _lastThirtyDate();
+                  } else if (numberDialog == 1 && index == 2) {
+                    _lastMountDate();
+                  } else if (numberDialog == 1 && index == 3) {
+                    _lastThreeMount();
+                  } else if (numberDialog == 1 && index == 4) {
+                    _lastBeginning();
+                  } else if (numberDialog == 1 && index == count - 1) {
                     _dataPickerDialog(context);
                   }
 
@@ -517,7 +545,7 @@ class _MyTrendsState extends State<MyTrends> {
       },
     ).then((val) {
       setState(() {
-        print('index dropdown: $val');
+        // print('index dropdown: $val');
         if (val != null) {
           if (numberDialog == 1) {
             indexDateDrop = val;
@@ -525,11 +553,84 @@ class _MyTrendsState extends State<MyTrends> {
             indexDropdown = val;
             titleReleases = listReleases[val];
           }
-          print('title ```  $titleReleases');
-          print('indexDateDrop: $indexDateDrop, indexDropdown: $indexDropdown');
+          // print('title ```  $titleReleases');
+          // print('indexDateDrop: $indexDateDrop, indexDropdown: $indexDropdown');
         }
       });
     });
+  }
+
+  _lastWeekDate() {
+    int testDay = nowDate.day - 7;
+    DateTime x1 = DateTime(nowDate.year, nowMonth, 0).toUtc();
+    var dayMount =
+        DateTime(nowDate.year, nowMonth + 1, 0).toUtc().difference(x1).inDays;
+    print(dayMount);
+    var monday = 1;
+    var nowd = new DateTime.now();
+
+    while (nowd.weekday != monday) {
+      nowd = nowd.subtract(new Duration(days: 1));
+    }
+
+    print('Recent monday $nowd');
+    oldDay =
+        testDay < 0 ? dayMount + testDay : nowDate.day - DateTime.now().weekday;
+    oldMonth = testDay < 0 ? nowDate.month - 1 : nowDate.month;
+    oldYear = (nowDate.month == 1 && nowDate.day < 8)
+        ? nowDate.year - 1
+        : nowDate.year;
+    nowDay = nowDate.day;
+    nowMonth = nowDate.month;
+    nowYear = nowDate.year;
+    print(DateTime.now().weekday);
+  }
+
+  _lastThirtyDate() {
+    oldDay = nowDate.day + 1;
+    oldMonth = (nowDate.month != 1) ? nowDate.month - 1 : 12;
+    oldYear = (nowDate.month == 1 && nowDate.day < 30)
+        ? nowDate.year - 1
+        : nowDate.year;
+    nowDay = nowDate.day;
+    nowMonth = nowDate.month;
+    nowYear = nowDate.year;
+  }
+
+  _lastMountDate() {
+    DateTime x1 = DateTime(nowDate.year, oldMonth, 0).toUtc();
+    var dayMount =
+        DateTime(nowDate.year, oldMonth + 1, 0).toUtc().difference(x1).inDays;
+    print(dayMount);
+    oldDay = 1;
+    oldMonth = (nowDate.month != 1) ? nowDate.month - 1 : 12;
+    oldYear = (nowDate.month == 1) ? nowDate.year - 1 : nowDate.year;
+    nowDay = dayMount;
+    nowMonth = (nowDate.month != 1) ? nowDate.month - 1 : 12;
+    nowYear = (nowDate.month == 1) ? nowDate.year - 1 : nowDate.year;
+  }
+
+  _lastThreeMount() {
+    DateTime x1 = DateTime(nowDate.year, oldMonth, 0).toUtc();
+    var dayMount =
+        DateTime(nowDate.year, oldMonth + 1, 0).toUtc().difference(x1).inDays;
+    print(dayMount);
+    oldDay = 1;
+    oldMonth = (nowDate.month != 1) ? nowDate.month - 3 : 12;
+    oldYear = (nowDate.month == 1) ? nowDate.year - 1 : nowDate.year;
+    nowDay = dayMount;
+    nowMonth = (nowDate.month != 1) ? nowDate.month - 1 : 12;
+    nowYear = (nowDate.month == 1) ? nowDate.year - 1 : nowDate.year;
+  }
+
+  _lastBeginning() {
+    var date = DateTime.fromMicrosecondsSinceEpoch(0);
+    oldDay = date.day;
+    oldMonth = date.month;
+    oldYear = date.year;
+    nowDay = nowDate.day;
+    nowMonth = nowDate.month;
+    nowYear = nowDate.year;
   }
 
   _dataPickerDialog(context) {
