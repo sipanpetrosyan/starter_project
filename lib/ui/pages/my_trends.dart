@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:igroove_ui/managment/const_variables.dart';
 import 'package:igroove_ui/widgets/date_periods_dialog.dart';
 import 'package:igroove_ui/widgets/expansion_tile_custom.dart';
+import 'package:flutter_sparkline/flutter_sparkline.dart';
 
 class MyTrends extends StatefulWidget {
   @override
@@ -14,6 +15,8 @@ class _MyTrendsState extends State<MyTrends> {
   ConstVariables constVariables;
   GlobalKey _globalKey = GlobalKey();
   GlobalKey _globalKeyReleases = GlobalKey();
+  GlobalKey<CustomExpansionTileState> _expansionTileKey =
+      GlobalKey<CustomExpansionTileState>();
 
   List<String> listItems = [
     'This week',
@@ -83,63 +86,20 @@ class _MyTrendsState extends State<MyTrends> {
     return positionTop;
   }
 
+  var data = [0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+
   @override
   Widget build(BuildContext context) {
     constVariables = ConstVariables(context: context);
     return Material(
       child: SafeArea(
         child: Scaffold(
-          bottomNavigationBar: BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            selectedItemColor: Color.fromARGB(255, 242, 113, 58),
-            unselectedItemColor: Color.fromARGB(255, 99, 99, 105),
-            showUnselectedLabels: true,
-            unselectedFontSize: 13,
-            selectedFontSize: 13,
-            elevation: 0,
-            currentIndex: selectedTab,
-            onTap: (index) {
-              setState(() {
-                selectedTab = index;
-              });
-            },
-            items: [
-              BottomNavigationBarItem(
-                title: Text(
-                  'Trends',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                icon: Icon(Icons.equalizer),
-              ),
-              BottomNavigationBarItem(
-                title: Text(
-                  'Account',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                icon: Icon(Icons.account_balance_wallet),
-              ),
-              BottomNavigationBarItem(
-                title: Text(
-                  'Products',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                icon: Icon(Icons.music_video),
-              ),
-              BottomNavigationBarItem(
-                title: Text(
-                  'Profile',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                icon: Icon(Icons.person),
-              ),
-            ],
-          ),
+          bottomNavigationBar: bottomNavigationBar(),
           body: trendsBody(),
         ),
       ),
     );
   }
-
 
   Widget trendsBody() {
     return GestureDetector(
@@ -163,247 +123,316 @@ class _MyTrendsState extends State<MyTrends> {
                 right: constVariables.screenWidth * 0.05,
                 bottom: 20,
               ),
-              child: GestureDetector(
-                onTap: () {
-                  userShowDialog(1);
-                },
-                child: Container(
-                  key: _globalKey,
-                  width: constVariables.screenWidth * 0.9,
-                  height: 26,
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 0.2),
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: Stack(
-                    alignment: Alignment.topCenter,
-                    children: <Widget>[
-                      Positioned(
-                        top: 0,
-                        left: 10,
-                        child: Container(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 4),
-                            child: Center(
-                              child: Icon(
-                                Icons.calendar_today,
-                                size: 17,
-                                color: Color.fromARGB(255, 244, 129, 79),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
-                        child: Container(
-                          child: Text(
-                            '$oldDay. $oldMonth $oldYear - $nowDay. $nowMonth $nowYear',
-                            style: TextStyle(
-                              fontFamily: "Montserrat",
-                              color: Color.fromARGB(255, 244, 129, 79),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              child: dropdownDate(),
             ),
             Stack(
               children: [
-                Container(
-                  width: constVariables.screenWidth,
-                  height: 170,
-                  color: Color.fromARGB(255, 33, 31, 34),
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 30),
-                    child: Column(
-                      children: [
-                        Text(
-                          "CHF 18'295.30",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 30,
-                              fontFamily: "Montserrat"),
-                        ),
-                        Text(
-                          "CHF 1163.40(+9.7%)",
-                          style: TextStyle(
-                            color: Color.fromARGB(255, 164, 162, 164),
-                            fontSize: 12,
-                            fontFamily: "Montserrat",
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
+                blackBlock(),
                 Positioned(
                   top: 125,
                   child: Padding(
                     padding: EdgeInsets.symmetric(
                         horizontal: constVariables.screenWidth * 0.05),
-                    child: Container(
-                      width: constVariables.screenWidth * 0.9,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        child: Row(
-                          key: _globalKeyReleases,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                userShowDialog(2);
-                              },
-                              child: Row(
-                                children: [
-                                  Text(
-                                    titleReleases ?? "",
-                                    style: TextStyle(
-                                        color:
-                                            Color.fromARGB(255, 244, 129, 79),
-                                        fontSize: 17),
-                                  ),
-                                  Icon(
-                                    Icons.keyboard_arrow_down,
-                                    color: Color.fromARGB(255, 244, 129, 79),
-                                    size: 20,
-                                  )
-                                ],
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  iconClick = !iconClick;
-                                });
-                              },
-                              child: Icon(
-                                (iconClick == true)
-                                    ? Icons.broken_image
-                                    : Icons.format_list_bulleted,
-                                color: Color.fromARGB(255, 244, 129, 79),
-                                size: 20,
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
+                    child: dropdownReleases(),
                   ),
                 )
               ],
             ),
             Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: constVariables.screenWidth * 0.05, vertical: 0),
-              child: CustomExpansionTile(
-                tilePadding: EdgeInsets.zero,
-                title: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                  decoration: BoxDecoration(
-                    border:
-                        Border.all(color: Color.fromARGB(255, 229, 229, 229)),
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(10.0),
-                      bottomRight: Radius.circular(10.0),
+                padding: EdgeInsets.symmetric(
+                    horizontal: constVariables.screenWidth * 0.05, vertical: 0),
+                child: customExpansionTileWidget())
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget dropdownDate() {
+    return GestureDetector(
+      onTap: () {
+        userShowDialog(1);
+      },
+      child: Container(
+        key: _globalKey,
+        width: constVariables.screenWidth * 0.9,
+        height: 26,
+        decoration: BoxDecoration(
+          border: Border.all(width: 0.2),
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: Stack(
+          alignment: Alignment.topCenter,
+          children: <Widget>[
+            Positioned(
+              top: 0,
+              left: 10,
+              child: Container(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Center(
+                    child: Icon(
+                      Icons.calendar_today,
+                      size: 17,
+                      color: Color.fromARGB(255, 244, 129, 79),
                     ),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        children: [
-                          Text(
-                            'Stream',
-                            style: TextStyle(
-                                fontFamily: "Montserrat",
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500),
-                          ),
-                          SizedBox(
-                            width: 24,
-                            height: 24,
-                          ),
-                        ],
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            'CHF 0.01',
-                            style: TextStyle(
-                              fontFamily: "Montserrat",
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          Text(
-                            '100 %',
-                            style: TextStyle(
-                                color: Colors.green,
-                                fontFamily: "Montserrat",
-                                fontSize: 13),
-                          )
-                        ],
-                      )
-                    ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Container(
+                child: Text(
+                  '$oldDay. $oldMonth $oldYear - $nowDay. $nowMonth $nowYear',
+                  style: TextStyle(
+                    fontFamily: "Montserrat",
+                    color: Color.fromARGB(255, 244, 129, 79),
                   ),
                 ),
-                children: [
-                  Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [Text('Streams:'), Text('3')],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [Text('Downloads:'), Text('0')],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [Text('Cd:'), Text('0')],
-                      ),
-                    ],
-                  )
-                ],
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-              // ExpansionTile(
-              //   initiallyExpanded: true,
-              //   // trailing: Text(''),
-              //   children: [
-              //     Column(
-              //       children: [
-              //         Row(
-              //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //           children: [Text('Streams:'), Text('3')],
-              //         ),
-              //         Row(
-              //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //           children: [Text('Downloads:'), Text('0')],
-              //         ),
-              //         Row(
-              //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //           children: [Text('Cd:'), Text('0')],
-              //         ),
-              //       ],
-              //     )
-              //   ],
-              // ),
+  Widget blackBlock() {
+    return Container(
+      width: constVariables.screenWidth,
+      height: 170,
+      color: Color.fromARGB(255, 33, 31, 34),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 30),
+        child: Column(
+          children: [
+            Text(
+              "CHF 18'295.30",
+              style: TextStyle(
+                  color: Colors.white, fontSize: 30, fontFamily: "Montserrat"),
+            ),
+            Text(
+              "CHF 1163.40(+9.7%)",
+              style: TextStyle(
+                color: Color.fromARGB(255, 164, 162, 164),
+                fontSize: 12,
+                fontFamily: "Montserrat",
+              ),
             )
           ],
         ),
       ),
+    );
+  }
+
+  Widget dropdownReleases() {
+    return Container(
+      width: constVariables.screenWidth * 0.9,
+      height: 50,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: Row(
+          key: _globalKeyReleases,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            GestureDetector(
+              onTap: () {
+                userShowDialog(2);
+              },
+              child: Row(
+                children: [
+                  Text(
+                    titleReleases ?? "",
+                    style: TextStyle(
+                        color: Color.fromARGB(255, 244, 129, 79), fontSize: 17),
+                  ),
+                  Icon(
+                    Icons.keyboard_arrow_down,
+                    color: Color.fromARGB(255, 244, 129, 79),
+                    size: 20,
+                  )
+                ],
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  if (iconClick != true) {
+                    _expansionTileKey.currentState.collapse();
+                  } else {
+                    _expansionTileKey.currentState.expand();
+                  }
+                });
+              },
+              child: Icon(
+                (iconClick == true)
+                    ? Icons.broken_image
+                    : Icons.format_list_bulleted,
+                color: Color.fromARGB(255, 244, 129, 79),
+                size: 20,
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget customExpansionTileWidget() {
+    return CustomExpansionTile(
+      key: _expansionTileKey,
+      tilePadding: EdgeInsets.zero,
+      onExpansionChanged: (value) {
+        setState(() {
+          iconClick = !value;
+        });
+      },
+      title: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+        decoration: BoxDecoration(
+          border: Border.all(color: Color.fromARGB(255, 229, 229, 229)),
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(10.0),
+            bottomRight: Radius.circular(10.0),
+          ),
+        ),
+        child: GestureDetector(
+          onTap: () {},
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                children: [
+                  Text(
+                    'Stream',
+                    style: TextStyle(
+                        fontFamily: "Montserrat",
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  SizedBox(
+                    width: 24,
+                    height: 24,
+                  ),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    'CHF 0.01',
+                    style: TextStyle(
+                      fontFamily: "Montserrat",
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  Text(
+                    '100 %',
+                    style: TextStyle(
+                        color: Colors.green,
+                        fontFamily: "Montserrat",
+                        fontSize: 13),
+                  )
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 30, bottom: 5),
+          child: Container(
+            height: 50,
+            child: Sparkline(
+              lineColor: Color.fromARGB(255, 244, 129, 79),
+              data: data,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Streams:',
+                      style: TextStyle(fontFamily: "Montserrat", fontSize: 13),
+                    ),
+                    Text('3')
+                  ],
+                ),
+              ),
+              Divider(
+                height: 1,
+                thickness: 1,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Downloads:',
+                      style: TextStyle(fontFamily: "Montserrat", fontSize: 13),
+                    ),
+                    Text('0')
+                  ],
+                ),
+              ),
+              Divider(
+                height: 1,
+                thickness: 1,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Cd:',
+                      style: TextStyle(fontFamily: "Montserrat", fontSize: 13),
+                    ),
+                    Text('0')
+                  ],
+                ),
+              ),
+              GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () {
+                  setState(() {
+                    iconClick = !iconClick;
+                    _expansionTileKey.currentState.collapse();
+                  });
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Close', style: TextStyle(color: Colors.grey)),
+                      Icon(
+                        Icons.keyboard_arrow_up,
+                        color: Colors.grey,
+                      )
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+        )
+      ],
     );
   }
 
@@ -510,5 +539,53 @@ class _MyTrendsState extends State<MyTrends> {
         initialDate: now,
         firstDate: DateTime(2000),
         lastDate: DateTime(2050));
+  }
+
+  Widget bottomNavigationBar() {
+    return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
+      selectedItemColor: Color.fromARGB(255, 242, 113, 58),
+      unselectedItemColor: Color.fromARGB(255, 99, 99, 105),
+      showUnselectedLabels: true,
+      unselectedFontSize: 13,
+      selectedFontSize: 13,
+      elevation: 0,
+      currentIndex: selectedTab,
+      onTap: (index) {
+        setState(() {
+          selectedTab = index;
+        });
+      },
+      items: [
+        BottomNavigationBarItem(
+          title: Text(
+            'Trends',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          icon: Icon(Icons.equalizer),
+        ),
+        BottomNavigationBarItem(
+          title: Text(
+            'Account',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          icon: Icon(Icons.account_balance_wallet),
+        ),
+        BottomNavigationBarItem(
+          title: Text(
+            'Products',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          icon: Icon(Icons.music_video),
+        ),
+        BottomNavigationBarItem(
+          title: Text(
+            'Profile',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          icon: Icon(Icons.person),
+        ),
+      ],
+    );
   }
 }

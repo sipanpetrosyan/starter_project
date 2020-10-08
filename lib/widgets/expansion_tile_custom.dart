@@ -142,10 +142,10 @@ class CustomExpansionTile extends StatefulWidget {
   final EdgeInsetsGeometry childrenPadding;
 
   @override
-  _CustomExpansionTileState createState() => _CustomExpansionTileState();
+  CustomExpansionTileState createState() => CustomExpansionTileState();
 }
 
-class _CustomExpansionTileState extends State<CustomExpansionTile>
+class CustomExpansionTileState extends State<CustomExpansionTile>
     with SingleTickerProviderStateMixin {
   static final Animatable<double> _easeOutTween =
       CurveTween(curve: Curves.easeOut);
@@ -211,6 +211,31 @@ class _CustomExpansionTileState extends State<CustomExpansionTile>
       widget.onExpansionChanged(_isExpanded);
   }
 
+  expand() {
+    setState(() {
+      _isExpanded = !_isExpanded;
+
+      if (_isExpanded) {
+        _controller.forward();
+      }
+      PageStorage.of(context)?.writeState(context, _isExpanded);
+
+      if (widget.onExpansionChanged != null) widget.onExpansionChanged(true);
+    });
+  }
+
+  collapse() {
+    setState(() {
+      _isExpanded = !_isExpanded;
+      if (!_isExpanded) {
+        _controller.reverse();
+      }
+      PageStorage.of(context)?.writeState(context, _isExpanded);
+
+      if (widget.onExpansionChanged != null) widget.onExpansionChanged(false);
+    });
+  }
+
   Widget _buildChildren(BuildContext context, Widget child) {
     final Color borderSideColor = _borderColor.value ?? Colors.transparent;
 
@@ -247,7 +272,7 @@ class _CustomExpansionTileState extends State<CustomExpansionTile>
   @override
   void didChangeDependencies() {
     final ThemeData theme = Theme.of(context);
-    _borderColorTween.end = theme.dividerColor;
+
     _headerColorTween
       ..begin = theme.textTheme.subtitle1.color
       ..end = theme.accentColor;
