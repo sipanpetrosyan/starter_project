@@ -24,6 +24,8 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_sparkline: ^0.1.0
+  load: ^0.1.6
+  image_picker: ^0.6.6+5
 
 
   # The following adds the Cupertino Icons font to your application.

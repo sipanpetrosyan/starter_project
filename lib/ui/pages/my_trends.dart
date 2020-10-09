@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:igroove_ui/managment/const_variables.dart';
+import 'package:igroove_ui/ui/pages/profile.dart';
 import 'package:igroove_ui/widgets/date_periods_dialog.dart';
 import 'package:igroove_ui/widgets/expansion_tile_custom.dart';
 import 'package:flutter_sparkline/flutter_sparkline.dart';
+import 'package:load/load.dart';
 
 class MyTrends extends StatefulWidget {
   @override
@@ -44,6 +48,9 @@ class _MyTrendsState extends State<MyTrends> {
     indexDateDrop = 1;
     indexDropdown = 0;
     titleReleases = listReleases[0];
+
+    showLoadingDialog();
+    Future.delayed(Duration(seconds: 1), () => hideLoadingDialog());
 
     super.initState();
   }
@@ -113,10 +120,21 @@ class _MyTrendsState extends State<MyTrends> {
       child: SafeArea(
         child: Scaffold(
           bottomNavigationBar: bottomNavigationBar(),
-          body: trendsBody(),
+          body: bodyContent(),
         ),
       ),
     );
+  }
+
+  Widget bodyContent() {
+    switch (selectedTab) {
+      case 0:
+        return trendsBody();
+        break;
+      case 3:
+        return ProfilePage();
+        break;
+    }
   }
 
   Widget trendsBody() {
@@ -267,7 +285,10 @@ class _MyTrendsState extends State<MyTrends> {
                   Text(
                     titleReleases ?? "",
                     style: TextStyle(
-                        color: Color.fromARGB(255, 244, 129, 79), fontSize: 17),
+                      color: Color.fromARGB(255, 244, 129, 79),
+                      fontSize: 17,
+                      fontFamily: "Montserrat",
+                    ),
                   ),
                   Icon(
                     Icons.keyboard_arrow_down,
@@ -545,16 +566,15 @@ class _MyTrendsState extends State<MyTrends> {
       },
     ).then((val) {
       setState(() {
-        // print('index dropdown: $val');
         if (val != null) {
+          showLoadingDialog();
+          Future.delayed(Duration(seconds: 1), () => hideLoadingDialog());
           if (numberDialog == 1) {
             indexDateDrop = val;
           } else {
             indexDropdown = val;
             titleReleases = listReleases[val];
           }
-          // print('title ```  $titleReleases');
-          // print('indexDateDrop: $indexDateDrop, indexDropdown: $indexDropdown');
         }
       });
     });
