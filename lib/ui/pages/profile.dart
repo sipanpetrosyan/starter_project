@@ -229,6 +229,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         child: TextFormField(
                           onTap: () {
                             print('Email');
+                            FocusScope.of(context).unfocus();
                             Navigator.of(context).pushNamed('changeEmail');
                           },
                           style: TextStyle(
@@ -266,7 +267,9 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         child: TextFormField(
                           onTap: () {
-                            print('Password');
+                            FocusScope.of(context).unfocus();
+                            print('password');
+                            Navigator.of(context).pushNamed('changePassword');
                           },
                           style: TextStyle(
                             color: Colors.black,
@@ -297,19 +300,34 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         ),
                       ),
-                      DropdownButton(
-                          isExpanded: true,
-                          value: _value,
-                          items: [
-                            DropdownMenuItem(child: Text("English"), value: 1),
-                            DropdownMenuItem(child: Text("Russian"), value: 2),
-                            DropdownMenuItem(child: Text("Armenian"), value: 3)
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              _value = value;
-                            });
-                          }),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: DropdownButton(
+                            isExpanded: true,
+                            value: _value,
+                            items: [
+                              DropdownMenuItem(
+                                  child: Text("English",
+                                      style:
+                                          TextStyle(fontFamily: "Montserrat")),
+                                  value: 1),
+                              DropdownMenuItem(
+                                  child: Text("Russian",
+                                      style:
+                                          TextStyle(fontFamily: "Montserrat")),
+                                  value: 2),
+                              DropdownMenuItem(
+                                  child: Text("Armenian",
+                                      style:
+                                          TextStyle(fontFamily: "Montserrat")),
+                                  value: 3)
+                            ],
+                            onChanged: (value) {
+                              setState(() {
+                                _value = value;
+                              });
+                            }),
+                      ),
                     ],
                   ),
                 ),

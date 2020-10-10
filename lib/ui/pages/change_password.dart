@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:igroove_ui/managment/const_variables.dart';
 
-class ChangeEmailPage extends StatefulWidget {
+class ChangePasswordPage extends StatefulWidget {
   @override
-  _ChangeEmailPageState createState() => _ChangeEmailPageState();
+  _ChangePasswordPageState createState() => _ChangePasswordPageState();
 }
 
-class _ChangeEmailPageState extends State<ChangeEmailPage> {
+class _ChangePasswordPageState extends State<ChangePasswordPage> {
   ConstVariables constVariables = ConstVariables();
   @override
   Widget build(BuildContext context) {
@@ -55,7 +55,7 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
               ),
               Center(
                 child: Text(
-                  'Change email',
+                  'Change password',
                   style: TextStyle(
                     color: Colors.black,
                     fontFamily: "Montserrat",
@@ -97,7 +97,7 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
                           fontFamily: "Montserrat",
                         ),
                         decoration: InputDecoration(
-                          labelText: 'New email',
+                          labelText: 'Password',
                           labelStyle: TextStyle(
                               color: Color.fromARGB(255, 244, 129, 79)),
                           enabledBorder: UnderlineInputBorder(
@@ -105,6 +105,7 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
                                 color: Color.fromARGB(255, 200, 200, 200)),
                           ),
                         ),
+                        obscureText: true,
                       ),
                     ),
                   ),
@@ -119,7 +120,29 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
                         fontFamily: "Montserrat",
                       ),
                       decoration: InputDecoration(
-                        labelText: 'Password',
+                        labelText: 'New password',
+                        labelStyle:
+                            TextStyle(color: Color.fromARGB(255, 244, 129, 79)),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Color.fromARGB(255, 200, 200, 200)),
+                        ),
+                      ),
+                      obscureText: true,
+                    ),
+                  ),
+                  Theme(
+                    data: ThemeData(
+                      primaryColor: Color.fromARGB(255, 244, 129, 79),
+                    ),
+                    child: TextFormField(
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontFamily: "Montserrat",
+                      ),
+                      decoration: InputDecoration(
+                        labelText: 'Confirm Password',
                         labelStyle:
                             TextStyle(color: Color.fromARGB(255, 244, 129, 79)),
                         enabledBorder: UnderlineInputBorder(
