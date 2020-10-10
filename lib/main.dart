@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:igroove_ui/ui/pages/change_email.dart';
 import 'package:igroove_ui/ui/pages/forgot_pass.dart';
 import 'package:igroove_ui/ui/pages/home.dart';
 import 'package:igroove_ui/ui/pages/my_trends.dart';
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
       routes: {
         'forgotPass': (context) => ForgotPassPage(),
         'trends': (context) => MyTrends(),
+        'changeEmail': (context) => ChangeEmailPage()
       },
     );
   }

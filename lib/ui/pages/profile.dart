@@ -12,6 +12,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   ConstVariables constVariables = ConstVariables();
   File _image;
+  int _value = 1;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -149,60 +150,167 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 15, top: 10),
-                  child: Text(
-                    'First name',
-                    style: TextStyle(fontSize: 12),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 15, right: 15),
-                  child: Theme(
-                    data: ThemeData(
-                      primaryColor: Colors.blue,
-                    ),
-                    child: TextFormField(
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontFamily: "Montserrat",
-                      ),
-                      decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Color.fromARGB(255, 200, 200, 200)),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 15),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Text(
+                          'First name',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontFamily: "Montserrat",
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 15, top: 10),
-                  child: Text(
-                    'Last name',
-                    style: TextStyle(fontSize: 12),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 15, right: 15),
-                  child: Theme(
-                    data: ThemeData(
-                      primaryColor: Colors.blue,
-                    ),
-                    child: TextFormField(
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontFamily: "Montserrat",
-                      ),
-                      decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Color.fromARGB(255, 200, 200, 200)),
+                      Theme(
+                        data: ThemeData(
+                          primaryColor: Colors.purple[500],
+                        ),
+                        child: TextFormField(
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontFamily: "Montserrat",
+                          ),
+                          decoration: InputDecoration(
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color.fromARGB(255, 200, 200, 200)),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Text(
+                          'Last name',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontFamily: "Montserrat",
+                          ),
+                        ),
+                      ),
+                      Theme(
+                        data: ThemeData(
+                          primaryColor: Colors.purple[500],
+                        ),
+                        child: TextFormField(
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontFamily: "Montserrat",
+                          ),
+                          decoration: InputDecoration(
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color.fromARGB(255, 200, 200, 200)),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Text(
+                          'Email',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontFamily: "Montserrat",
+                          ),
+                        ),
+                      ),
+                      Theme(
+                        data: ThemeData(
+                          primaryColor: Color.fromARGB(255, 200, 200, 200),
+                        ),
+                        child: TextFormField(
+                          onTap: () {
+                            print('Email');
+                            Navigator.of(context).pushNamed('changeEmail');
+                          },
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontFamily: "Montserrat",
+                          ),
+                          decoration: InputDecoration(
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color.fromARGB(255, 200, 200, 200)),
+                            ),
+                            suffixIcon: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Icon(Icons.chevron_right),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Text(
+                          'Password',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontFamily: "Montserrat",
+                          ),
+                        ),
+                      ),
+                      Theme(
+                        data: ThemeData(
+                          primaryColor: Color.fromARGB(255, 200, 200, 200),
+                        ),
+                        child: TextFormField(
+                          onTap: () {
+                            print('Password');
+                          },
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontFamily: "Montserrat",
+                          ),
+                          decoration: InputDecoration(
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color.fromARGB(255, 200, 200, 200)),
+                            ),
+                            suffixIcon: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Icon(Icons.chevron_right),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Text(
+                          'Lenguage',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontFamily: "Montserrat",
+                          ),
+                        ),
+                      ),
+                      DropdownButton(
+                          isExpanded: true,
+                          value: _value,
+                          items: [
+                            DropdownMenuItem(child: Text("English"), value: 1),
+                            DropdownMenuItem(child: Text("Russian"), value: 2),
+                            DropdownMenuItem(child: Text("Armenian"), value: 3)
+                          ],
+                          onChanged: (value) {
+                            setState(() {
+                              _value = value;
+                            });
+                          }),
+                    ],
                   ),
                 ),
               ],
