@@ -1,7 +1,9 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 import 'package:igroove_ui/managment/const_variables.dart';
+import 'package:igroove_ui/ui/pages/validator.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -10,7 +12,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String _email, _password;
-
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passController = TextEditingController();
+  bool isEmailValid = true;
+  bool isPassValid = true;
+  String errorEmailMesage;
+  String errorPassMesage;
+  String errorEmail;
   ConstVariables constVariables;
   @override
   Widget build(BuildContext context) {
@@ -72,40 +80,51 @@ class _HomePageState extends State<HomePage> {
                       data: ThemeData(
                         primaryColor: Colors.white,
                         inputDecorationTheme: InputDecorationTheme(
-                          labelStyle: TextStyle(color: Colors.white),
+                          labelStyle: TextStyle(
+                              color: isEmailValid ? Colors.white : Colors.red),
                         ),
                       ),
                       child: TextFormField(
+                        controller: emailController,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,
                           fontFamily: "Montserrat",
                         ),
                         decoration: InputDecoration(
-                          labelText: 'Email',
+                          labelText: isEmailValid ? 'Email' : errorEmailMesage,
                           enabledBorder: UnderlineInputBorder(
                             borderSide: BorderSide(
                                 color: Color.fromARGB(255, 130, 130, 130)),
                           ),
                         ),
-                        onChanged: (input) => _email = input,
+                        onChanged: (input) {
+                          _email = input;
+                          print(_email);
+                        },
                       ),
                     ),
                     Theme(
                       data: ThemeData(
                         primaryColor: Colors.white,
                         inputDecorationTheme: InputDecorationTheme(
-                          labelStyle: TextStyle(color: Colors.white),
+                          labelStyle: TextStyle(
+                              color: isPassValid ? Colors.white : Colors.red),
                         ),
                       ),
                       child: TextFormField(
+                        controller: passController,
+                        keyboardType: TextInputType.text,
+                        validator: (val) =>
+                            MatchValidator(errorText: 'passwords do not match')
+                                .validateMatch(val, _password),
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,
                           fontFamily: "Montserrat",
                         ),
                         decoration: InputDecoration(
-                          labelText: 'Password',
+                          labelText: isPassValid ? 'Password' : errorPassMesage,
                           enabledBorder: UnderlineInputBorder(
                             borderSide: BorderSide(
                                 color: Color.fromARGB(255, 130, 130, 130)),
@@ -143,7 +162,18 @@ class _HomePageState extends State<HomePage> {
                       color: Color.fromARGB(255, 232, 107, 44),
                       textColor: Colors.white,
                       onPressed: () {
-                        Navigator.of(context).pushNamed('trends');
+                        errorEmailMesage =
+                            Validator.emailValidator.call(emailController.text);
+                        errorPassMesage = Validator.passwordValidator
+                            .call(passController.text);
+                        isEmailValid = errorEmailMesage == null;
+                        isPassValid = errorPassMesage == null;
+                        setState(() {});
+                        print(emailController.text);
+                        if (isEmailValid && isPassValid) {
+                          Navigator.of(context).pushNamed('trends');
+                        }
+                        // Navigator.of(context).pushNamed('trends');
                       },
                       child: Text(
                         "Login",
