@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:igroove_ui/managment/const_variables.dart';
+import 'package:igroove_ui/ui/pages/validator.dart';
 
 class ForgotPassPage extends StatefulWidget {
   @override
@@ -8,6 +9,9 @@ class ForgotPassPage extends StatefulWidget {
 
 class _ForgotPassPageState extends State<ForgotPassPage> {
   String _email, _password;
+  final TextEditingController emailController = TextEditingController();
+  bool isEmailValid = true;
+  String errorEmailMesage;
   ConstVariables constVariables;
 
   @override
@@ -80,17 +84,19 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
                       data: ThemeData(
                         primaryColor: Colors.white,
                         inputDecorationTheme: InputDecorationTheme(
-                          labelStyle: TextStyle(color: Colors.white),
+                          labelStyle: TextStyle(
+                              color: isEmailValid ? Colors.white : Colors.red),
                         ),
                       ),
                       child: TextFormField(
+                        controller: emailController,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,
                           fontFamily: "Montserrat",
                         ),
                         decoration: InputDecoration(
-                          labelText: 'Email',
+                          labelText: isEmailValid ? 'Email' : errorEmailMesage,
                           enabledBorder: UnderlineInputBorder(
                             borderSide: BorderSide(
                                 color: Color.fromARGB(255, 130, 130, 130)),
@@ -110,7 +116,15 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
                     child: RaisedButton(
                       color: Color.fromARGB(255, 232, 107, 44),
                       textColor: Colors.white,
-                      onPressed: () {},
+                      onPressed: () {
+                        errorEmailMesage =
+                            Validator.emailValidator.call(emailController.text);
+                        isEmailValid = errorEmailMesage == null;
+                        setState(() {});
+                        if (isEmailValid) {
+                          Navigator.pop(context);
+                        }
+                      },
                       child: Text(
                         "Request new password",
                         style: TextStyle(

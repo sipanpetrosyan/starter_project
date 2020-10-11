@@ -2,14 +2,12 @@ import 'package:form_field_validator/form_field_validator.dart';
 
 class Validator {
   static final emailValidator = MultiValidator([
-    RequiredValidator(errorText: 'this field is required'),
-    EmailValidator(errorText: 'enter valid email')
+    RequiredValidator(errorText: 'Enter valid email'),
+    EmailValidator(errorText: 'Enter valid email address')
   ]);
 
-  // static final emailValid = EmailValidator(errorText: 'null');
-
   static final passwordValidator = MultiValidator([
-    RequiredValidator(errorText: 'password is required'),
-    MinLengthValidator(8, errorText: 'password must be at least 8 digits long'),
+    RequiredValidator(errorText: 'Password can not be empty'),
+    MinLengthValidator(8, errorText: 'Password must be at least 8 digits long'),
   ]);
 }

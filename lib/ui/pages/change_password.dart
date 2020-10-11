@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:igroove_ui/managment/const_variables.dart';
+import 'package:igroove_ui/ui/pages/validator.dart';
 
 class ChangePasswordPage extends StatefulWidget {
   @override
@@ -8,6 +9,10 @@ class ChangePasswordPage extends StatefulWidget {
 
 class _ChangePasswordPageState extends State<ChangePasswordPage> {
   ConstVariables constVariables = ConstVariables();
+  String _password;
+  final TextEditingController passController = TextEditingController();
+  bool isPassValid = true;
+  String errorPassMesage;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -28,14 +33,12 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   Navigator.pop(context);
                 },
                 child: Container(
-                  // color: Colors.blue,
                   width: 64,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
-                        // color: Colors.red,
                         child: Icon(
                           Icons.keyboard_arrow_left,
                           color: Color.fromARGB(255, 244, 129, 79),
@@ -65,7 +68,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               SizedBox(
                 width: 64,
               )
-              // siz
             ],
           ),
         ),
@@ -91,6 +93,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                         primaryColor: Color.fromARGB(255, 244, 129, 79),
                       ),
                       child: TextFormField(
+                        keyboardType: TextInputType.text,
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 16,
@@ -114,20 +117,26 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                       primaryColor: Color.fromARGB(255, 244, 129, 79),
                     ),
                     child: TextFormField(
+                      controller: passController,
+                      keyboardType: TextInputType.text,
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 16,
                         fontFamily: "Montserrat",
                       ),
                       decoration: InputDecoration(
-                        labelText: 'New password',
-                        labelStyle:
-                            TextStyle(color: Color.fromARGB(255, 244, 129, 79)),
+                        labelText:
+                            isPassValid ? 'New password' : errorPassMesage,
+                        labelStyle: TextStyle(
+                            color: isPassValid
+                                ? Color.fromARGB(255, 244, 129, 79)
+                                : Colors.red),
                         enabledBorder: UnderlineInputBorder(
                           borderSide: BorderSide(
                               color: Color.fromARGB(255, 200, 200, 200)),
                         ),
                       ),
+                      onChanged: (input) => _password = input,
                       obscureText: true,
                     ),
                   ),
@@ -136,6 +145,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                       primaryColor: Color.fromARGB(255, 244, 129, 79),
                     ),
                     child: TextFormField(
+                      keyboardType: TextInputType.text,
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 16,
@@ -180,7 +190,14 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               bottom: 12,
               child: GestureDetector(
                 onTap: () {
-                  print('Save');
+                  errorPassMesage =
+                      Validator.passwordValidator.call(passController.text);
+                  isPassValid = errorPassMesage == null;
+                  setState(() {});
+                  if (isPassValid) {
+                    print('Save');
+                    Navigator.pop(context);
+                  }
                 },
                 child: Container(
                   decoration: BoxDecoration(

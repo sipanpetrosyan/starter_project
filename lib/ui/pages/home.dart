@@ -18,7 +18,6 @@ class _HomePageState extends State<HomePage> {
   bool isPassValid = true;
   String errorEmailMesage;
   String errorPassMesage;
-  String errorEmail;
   ConstVariables constVariables;
   @override
   Widget build(BuildContext context) {
@@ -100,7 +99,6 @@ class _HomePageState extends State<HomePage> {
                         ),
                         onChanged: (input) {
                           _email = input;
-                          print(_email);
                         },
                       ),
                     ),
@@ -115,9 +113,6 @@ class _HomePageState extends State<HomePage> {
                       child: TextFormField(
                         controller: passController,
                         keyboardType: TextInputType.text,
-                        validator: (val) =>
-                            MatchValidator(errorText: 'passwords do not match')
-                                .validateMatch(val, _password),
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,
@@ -169,11 +164,9 @@ class _HomePageState extends State<HomePage> {
                         isEmailValid = errorEmailMesage == null;
                         isPassValid = errorPassMesage == null;
                         setState(() {});
-                        print(emailController.text);
                         if (isEmailValid && isPassValid) {
                           Navigator.of(context).pushNamed('trends');
                         }
-                        // Navigator.of(context).pushNamed('trends');
                       },
                       child: Text(
                         "Login",
