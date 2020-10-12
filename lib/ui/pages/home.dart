@@ -5,33 +5,41 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:igroove_ui/managment/const_variables.dart';
 import 'package:igroove_ui/ui/pages/validator.dart';
 
-class HomePage extends StatefulWidget {
+class LoginPage extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _LoginPageState extends State<LoginPage> {
   String _email, _password;
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passController = TextEditingController();
   bool isEmailValid = true;
   bool isPassValid = true;
   String errorEmailMesage;
   String errorPassMesage;
+  String errorEmail;
   ConstVariables constVariables;
   @override
   Widget build(BuildContext context) {
-    constVariables = ConstVariables(context: context);
-
     return Scaffold(
-      body: bodyContent(),
+      body: bodyContent(context),
     );
   }
 
-  Widget bodyContent() {
+  @override
+  didChangeDependencies() {
+    super.didChangeDependencies();
+    constVariables = ConstVariables();
+  }
+
+  Widget bodyContent(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        FocusScope.of(context).unfocus();
+        // if (MediaQuery.of(context).viewInsets.bottom != 0) {
+        //   FocusScope.of(context).unfocus();
+        // }
+        FocusScope.of(context).requestFocus(FocusNode());
       },
       child: SingleChildScrollView(
         child: Container(
@@ -113,6 +121,9 @@ class _HomePageState extends State<HomePage> {
                       child: TextFormField(
                         controller: passController,
                         keyboardType: TextInputType.text,
+                        validator: (val) =>
+                            MatchValidator(errorText: 'passwords do not match')
+                                .validateMatch(val, _password),
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,
@@ -163,10 +174,15 @@ class _HomePageState extends State<HomePage> {
                             .call(passController.text);
                         isEmailValid = errorEmailMesage == null;
                         isPassValid = errorPassMesage == null;
+
                         setState(() {});
+                        print(emailController.text);
                         if (isEmailValid && isPassValid) {
                           Navigator.of(context).pushNamed('trends');
+                          emailController = TextEditingController();
+                          passController = TextEditingController();
                         }
+                        // Navigator.of(context).pushNamed('trends');
                       },
                       child: Text(
                         "Login",

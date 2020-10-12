@@ -16,7 +16,7 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
 
   @override
   Widget build(BuildContext context) {
-    constVariables = ConstVariables(context: context);
+    constVariables = ConstVariables();
     return Scaffold(
       body: forgotContent(),
     );

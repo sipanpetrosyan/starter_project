@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:igroove_ui/base/app_keys.dart';
 import 'package:igroove_ui/managment/const_variables.dart';
+import 'package:igroove_ui/ui/pages/home.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -11,8 +13,11 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   ConstVariables constVariables = ConstVariables();
+  FocusNode focusNode = FocusNode();
   File _image;
   int _value = 1;
+  static List<String> dropdownLengList = ['English', 'Russian', 'Armenian'];
+  String selectLenguage = dropdownLengList[0];
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -121,6 +126,11 @@ class _ProfilePageState extends State<ProfilePage> {
                   behavior: HitTestBehavior.translucent,
                   onTap: () {
                     print('Log out');
+                    AppKeys.navigatorKey.currentState.popUntil(
+                      (route) {
+                        return route.settings.name == "/";
+                      },
+                    );
                   },
                   child: Row(
                     children: [
@@ -229,7 +239,11 @@ class _ProfilePageState extends State<ProfilePage> {
                         child: TextFormField(
                           onTap: () {
                             print('Email');
-                            FocusScope.of(context).unfocus();
+                            setState(() {
+                              FocusScope.of(context)
+                                  .requestFocus(new FocusNode());
+                            });
+
                             Navigator.of(context).pushNamed('changeEmail');
                           },
                           style: TextStyle(
@@ -267,7 +281,10 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         child: TextFormField(
                           onTap: () {
-                            FocusScope.of(context).unfocus();
+                            setState(() {
+                              FocusScope.of(context)
+                                  .requestFocus(new FocusNode());
+                            });
                             print('password');
                             Navigator.of(context).pushNamed('changePassword');
                           },
@@ -300,33 +317,66 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 20),
-                        child: DropdownButton(
-                            isExpanded: true,
-                            value: _value,
-                            items: [
-                              DropdownMenuItem(
-                                  child: Text("English",
-                                      style:
-                                          TextStyle(fontFamily: "Montserrat")),
-                                  value: 1),
-                              DropdownMenuItem(
-                                  child: Text("Russian",
-                                      style:
-                                          TextStyle(fontFamily: "Montserrat")),
-                                  value: 2),
-                              DropdownMenuItem(
-                                  child: Text("Armenian",
-                                      style:
-                                          TextStyle(fontFamily: "Montserrat")),
-                                  value: 3)
-                            ],
-                            onChanged: (value) {
-                              setState(() {
-                                _value = value;
-                              });
-                            }),
+                      GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                        onTap: () {
+                          FocusScope.of(context).requestFocus(focusNode);
+                        },
+                        child: PopupMenuButton<int>(
+                          onSelected: (value) {
+                            setState(() {
+                              selectLenguage = dropdownLengList[value];
+                            });
+                          },
+                          itemBuilder: (context) => [
+                            ...List.generate(
+                              dropdownLengList.length,
+                              (index) => PopupMenuItem(
+                                value: index,
+                                child: Text(
+                                  dropdownLengList[index],
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: "Montserrat",
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                          offset: Offset(1, 0),
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 30),
+                            child: Container(
+                              height: 50,
+                              width: constVariables.screenWidth,
+                              decoration: const BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                      width: 2.0,
+                                      color:
+                                          Color.fromARGB(255, 220, 220, 220)),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    selectLenguage,
+                                    style: TextStyle(
+                                      fontFamily: "Montserrat",
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.arrow_drop_down,
+                                    color: Color.fromARGB(255, 150, 150, 150),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -338,6 +388,27 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
+
+  Widget _paddingPopup() => PopupMenuButton<int>(
+        itemBuilder: (context) => [
+          PopupMenuItem(
+            value: 1,
+            child: Text(
+              "English",
+              style: TextStyle(color: Colors.red, fontWeight: FontWeight.w700),
+            ),
+          ),
+          PopupMenuItem(
+            value: 2,
+            child: Text(
+              "Chinese",
+              style: TextStyle(color: Colors.red, fontWeight: FontWeight.w700),
+            ),
+          ),
+        ],
+        elevation: 4,
+        padding: EdgeInsets.symmetric(horizontal: 50),
+      );
 
   void _showPicker(context) {
     showModalBottomSheet(

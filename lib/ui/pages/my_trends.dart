@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:igroove_ui/base/app_keys.dart';
 import 'package:igroove_ui/managment/const_variables.dart';
 import 'package:igroove_ui/ui/pages/profile.dart';
 import 'package:igroove_ui/widgets/date_periods_dialog.dart';
 import 'package:igroove_ui/widgets/expansion_tile_custom.dart';
 import 'package:flutter_sparkline/flutter_sparkline.dart';
-import 'package:load/load.dart';
+import 'package:igroove_ui/widgets/loading.dart';
+// import 'package:load/load.dart';
 
 class MyTrends extends StatefulWidget {
   @override
@@ -49,8 +51,12 @@ class _MyTrendsState extends State<MyTrends> {
     indexDropdown = 0;
     titleReleases = listReleases[0];
 
-    showLoadingDialog();
-    Future.delayed(Duration(seconds: 1), () => hideLoadingDialog());
+    // showLoadingDialog();
+
+    Future.delayed(Duration(milliseconds: 200), () {
+      AppDialogs(context).showLoading();
+    });
+    Future.delayed(Duration(seconds: 1), () => Navigator.of(context).pop());
 
     super.initState();
   }
@@ -115,7 +121,7 @@ class _MyTrendsState extends State<MyTrends> {
 
   @override
   Widget build(BuildContext context) {
-    constVariables = ConstVariables(context: context);
+    constVariables = ConstVariables();
     return Material(
       child: SafeArea(
         child: Scaffold(
@@ -567,8 +573,10 @@ class _MyTrendsState extends State<MyTrends> {
     ).then((val) {
       setState(() {
         if (val != null) {
-          showLoadingDialog();
-          Future.delayed(Duration(seconds: 1), () => hideLoadingDialog());
+          // showLoadingDialog();
+          AppDialogs(context).showLoading();
+          // Future.delayed(Duration(seconds: 1), () => Navigator.of(context).pop());
+          Future.delayed(Duration(seconds: 1), () => Navigator.pop(context));
           if (numberDialog == 1) {
             indexDateDrop = val;
           } else {
