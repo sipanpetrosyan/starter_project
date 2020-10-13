@@ -6,7 +6,28 @@ class AppDialogs {
   AppDialogs(this.context);
 
   showLoading() {
-    AlertDialog alert = AlertDialog(
+    Center alert = Center(
+      child: Container(
+        // color: Colors.red,
+        width: 210,
+        height: 100,
+        child: Column(
+          children: [
+            Theme(
+              data: Theme.of(context)
+                  .copyWith(accentColor: Color.fromARGB(255, 244, 129, 79)),
+              child: new CircularProgressIndicator(),
+            ),
+            // Text(
+            //   "Loading...",
+            //   style: TextStyle(
+            //       color: Color.fromARGB(255, 244, 129, 79), fontSize: 15),
+            // ),
+          ],
+        ),
+      ),
+    );
+    /*AlertDialog alert = AlertDialog(
       backgroundColor: Colors.transparent,
       content: Container(
         height: 70,
@@ -27,7 +48,7 @@ class AppDialogs {
           ],
         ),
       ),
-    );
+    );*/
     showDialog(
       // barrierColor: Color.fromARGB(255, 180, 180, 180),
       barrierDismissible: false,
