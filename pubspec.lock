@@ -105,9 +105,11 @@ packages:
   image_picker:
     dependency: "direct main"
     description:
-      name: image_picker
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "packages/image_picker/image_picker"
+      ref: HEAD
+      resolved-ref: f0ad6f041e5cb94fb065c40e8d7c8a13bd54d831
+      url: "https://github.com/knaeckeKami/plugins.git"
+    source: git
     version: "0.6.7+11"
   image_picker_platform_interface:
     dependency: transitive

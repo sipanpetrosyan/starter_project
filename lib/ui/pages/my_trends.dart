@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:igroove_ui/base/app_keys.dart';
 import 'package:igroove_ui/managment/const_variables.dart';
+import 'package:igroove_ui/ui/pages/account.dart';
+import 'package:igroove_ui/ui/pages/products.dart';
 import 'package:igroove_ui/ui/pages/profile.dart';
 import 'package:igroove_ui/widgets/date_periods_dialog.dart';
 import 'package:igroove_ui/widgets/expansion_tile_custom.dart';
@@ -130,6 +132,10 @@ class _MyTrendsState extends State<MyTrends> {
       case 0:
         return trendsBody();
         break;
+      case 1:
+        return AccountPage();
+      case 2:
+        return ProductsPage();
       case 3:
         return ProfilePage();
         break;

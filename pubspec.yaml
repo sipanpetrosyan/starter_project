@@ -24,7 +24,11 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_sparkline: ^0.1.0
-  image_picker: ^0.6.6+5
+  # image_picker: ^0.6.6+5
+  image_picker:
+    git:
+     url: https://github.com/knaeckeKami/plugins.git
+     path: packages/image_picker/image_picker
   form_field_validator: ^1.0.1
 
 
