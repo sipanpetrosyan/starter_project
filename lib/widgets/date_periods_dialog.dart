@@ -30,7 +30,6 @@ class _DatePeriodsDialogState extends State<DatePeriodsDialog> {
 
   @override
   Widget build(BuildContext context) {
-    //int selectidIndex = widget.numberPopup == 1 ? 1 : 0;
     return Stack(
       children: [
         Positioned(

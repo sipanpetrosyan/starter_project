@@ -8,7 +8,6 @@ import 'package:igroove_ui/widgets/date_periods_dialog.dart';
 import 'package:igroove_ui/widgets/expansion_tile_custom.dart';
 import 'package:flutter_sparkline/flutter_sparkline.dart';
 import 'package:igroove_ui/widgets/loading.dart';
-// import 'package:load/load.dart';
 
 class MyTrends extends StatefulWidget {
   @override
@@ -51,8 +50,6 @@ class _MyTrendsState extends State<MyTrends> {
     indexDropdown = 0;
     titleReleases = listReleases[0];
 
-    // showLoadingDialog();
-
     Future.delayed(Duration(milliseconds: 200), () {
       AppDialogs(context).showLoading();
     });
@@ -90,14 +87,12 @@ class _MyTrendsState extends State<MyTrends> {
   Size _getSizes() {
     final RenderBox renderBoxTop = _globalKey.currentContext.findRenderObject();
     final sizeTop = renderBoxTop.size;
-    // print("SIZE of Top: $sizeTop");
     return sizeTop;
   }
 
   Offset _getPositions() {
     final RenderBox renderBoxTop = _globalKey.currentContext.findRenderObject();
     final positionTop = renderBoxTop.localToGlobal(Offset.zero);
-    // print("ПОЛОЖЕНИЕ Top: $positionTop");
     return positionTop;
   }
 
@@ -105,7 +100,6 @@ class _MyTrendsState extends State<MyTrends> {
     final RenderBox renderBoxTop =
         _globalKeyReleases.currentContext.findRenderObject();
     final sizeTop = renderBoxTop.size;
-    // print("SIZE of Top: $sizeTop");
     return sizeTop;
   }
 
@@ -113,7 +107,6 @@ class _MyTrendsState extends State<MyTrends> {
     final RenderBox renderBoxTop =
         _globalKeyReleases.currentContext.findRenderObject();
     final positionTop = renderBoxTop.localToGlobal(Offset.zero);
-    // print("ПОЛОЖЕНИЕ Top: $positionTop");
     return positionTop;
   }
 
@@ -510,7 +503,6 @@ class _MyTrendsState extends State<MyTrends> {
               child: GestureDetector(
                 behavior: HitTestBehavior.translucent,
                 onTap: () {
-                  // print('index2- ${index}');
                   Navigator.of(context).pop(index);
 
                   if (numberDialog == 1 && index == 0) {
@@ -573,9 +565,7 @@ class _MyTrendsState extends State<MyTrends> {
     ).then((val) {
       setState(() {
         if (val != null) {
-          // showLoadingDialog();
           AppDialogs(context).showLoading();
-          // Future.delayed(Duration(seconds: 1), () => Navigator.of(context).pop());
           Future.delayed(Duration(seconds: 1), () => Navigator.pop(context));
           if (numberDialog == 1) {
             indexDateDrop = val;

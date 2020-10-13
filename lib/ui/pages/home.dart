@@ -36,9 +36,6 @@ class _LoginPageState extends State<LoginPage> {
   Widget bodyContent(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // if (MediaQuery.of(context).viewInsets.bottom != 0) {
-        //   FocusScope.of(context).unfocus();
-        // }
         FocusScope.of(context).requestFocus(FocusNode());
       },
       child: SingleChildScrollView(
@@ -182,7 +179,6 @@ class _LoginPageState extends State<LoginPage> {
                           emailController = TextEditingController();
                           passController = TextEditingController();
                         }
-                        // Navigator.of(context).pushNamed('trends');
                       },
                       child: Text(
                         "Login",
