@@ -12,8 +12,10 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   String _email, _password;
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passController = TextEditingController();
+  TextEditingController emailController =
+      TextEditingController(text: "zxczxczxc@dzvzdf.zdf");
+  TextEditingController passController =
+      TextEditingController(text: "asdasdasdasd");
   bool isEmailValid = true;
   bool isPassValid = true;
   String errorEmailMesage;
