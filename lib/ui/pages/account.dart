@@ -8,16 +8,18 @@ class AccountPage extends StatefulWidget {
 
 class _AccountPageState extends State<AccountPage>
     with TickerProviderStateMixin {
-  bool animationZero = false;
   bool animationOne = false;
   bool animationTwo = false;
   bool animationThree = false;
+  bool animationFour = false;
+  bool animationFive = false;
+  bool animationSix = false;
+  bool animationSeven = false;
   AnimationController _controller;
   Animation<Offset> _offsetAnimation;
   @override
   void initState() {
     super.initState();
-    animationZero = true;
     _controller = AnimationController(
       duration: Duration(seconds: 2),
       vsync: this,
@@ -77,7 +79,92 @@ class _AccountPageState extends State<AccountPage>
             curve: Curves.ease,
           ));
           setState(() {});
-          _controller.forward();
+
+          _controller.forward().then((value) {
+            animationFour = true;
+            _controller = AnimationController(
+              duration: Duration(seconds: 2),
+              vsync: this,
+            );
+            _offsetAnimation = Tween<Offset>(
+              begin: _offsetAnimation.value,
+              end: Offset(
+                  _offsetAnimation.value.dx - 1.5, _offsetAnimation.value.dy),
+            ).animate(CurvedAnimation(
+              parent: _controller,
+              curve: Curves.ease,
+            ));
+            setState(() {});
+
+            _controller.forward().then((value) {
+              animationFive = true;
+              _controller = AnimationController(
+                duration: Duration(seconds: 2),
+                vsync: this,
+              );
+              _offsetAnimation = Tween<Offset>(
+                begin: _offsetAnimation.value,
+                end: Offset(_offsetAnimation.value.dx - 1.5,
+                    _offsetAnimation.value.dy + 2),
+              ).animate(CurvedAnimation(
+                parent: _controller,
+                curve: Curves.ease,
+              ));
+              setState(() {});
+
+              _controller.forward().then((value) {
+                animationSix = true;
+                _controller = AnimationController(
+                  duration: Duration(seconds: 2),
+                  vsync: this,
+                );
+                _offsetAnimation = Tween<Offset>(
+                  begin: _offsetAnimation.value,
+                  end: Offset(
+                      _offsetAnimation.value.dx + 3, _offsetAnimation.value.dy),
+                ).animate(CurvedAnimation(
+                  parent: _controller,
+                  curve: Curves.ease,
+                ));
+                setState(() {});
+
+                _controller.forward().then((value) {
+                  animationSeven = true;
+                  _controller = AnimationController(
+                    duration: Duration(seconds: 2),
+                    vsync: this,
+                  );
+                  _offsetAnimation = Tween<Offset>(
+                    begin: _offsetAnimation.value,
+                    end: Offset(_offsetAnimation.value.dx - 1.5,
+                        _offsetAnimation.value.dy - 2),
+                  ).animate(CurvedAnimation(
+                    parent: _controller,
+                    curve: Curves.ease,
+                  ));
+                  setState(() {});
+
+                  _controller.forward().then((value) {
+                    animationSeven = true;
+                    _controller = AnimationController(
+                      duration: Duration(seconds: 1),
+                      vsync: this,
+                    )..repeat(reverse: true);
+                    _offsetAnimation = Tween<Offset>(
+                      begin: _offsetAnimation.value,
+                      end: Offset(
+                          _offsetAnimation.value.dx, _offsetAnimation.value.dy),
+                    ).animate(CurvedAnimation(
+                      parent: _controller,
+                      curve: Curves.elasticOut,
+                    ));
+                    setState(() {});
+                    // _controller.forward();
+                  });
+                });
+              });
+            });
+          });
         });
       });
     });
@@ -101,7 +188,18 @@ class _AccountPageState extends State<AccountPage>
           position: _offsetAnimation,
           child: RotationTransition(
             turns: AlwaysStoppedAnimation(animationOne
-                ? (!animationTwo ? 45 : !animationThree ? -90 : 135) / 360
+                ? (!animationTwo
+                        ? 45
+                        : !animationThree
+                            ? -90
+                            : !animationFour
+                                ? 135
+                                : !animationFive
+                                    ? -90
+                                    : !animationSix
+                                        ? -135
+                                        : !animationSeven ? 90 : -45) /
+                    360
                 : -90 / 360),
             child: Image(
               height: 100,
