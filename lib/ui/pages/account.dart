@@ -18,21 +18,25 @@ class _AccountPageState extends State<AccountPage>
   Animation<double> _animation;
   var random = new Random();
   List<double> arr = [];
+  List<double> arr2 = [];
+  Map<String, List> map1 = {};
 
   ConstVariables constVariables = ConstVariables();
 
   Timer timer;
   @override
   void initState() {
-    print('random---- ${random.nextInt(600)}');
-    arr.add(random.nextDouble() * 600);
-    print(List<String>.generate(10, (counter) {
-      arr.add(random.nextDouble() * 600);
-    }));
-    print('arr $arr');
+    // arr.add(random.nextDouble() * constVariables.screenWidth);
+    List<String>.generate(10, (counter) {
+      arr.add(random.nextDouble() * constVariables.screenWidth);
+      arr2.add(random.nextDouble() * constVariables.screenWidth);
+    });
+    Map<String, List> map1 = {'x': arr, 'y': arr2};
+    // print('arr $arr');
+    print('arr $map1');
     super.initState();
     animationBuilder();
-    timer = Timer.periodic(Duration(seconds: 9), (timer) {
+    timer = Timer.periodic(Duration(seconds: 10), (timer) {
       setState(() {});
       animationBuilder();
     });
@@ -58,7 +62,7 @@ class _AccountPageState extends State<AccountPage>
             ...List.generate(arr.length, (index) {
               return Positioned(
                 top: arr[index],
-                left: arr[index],
+                left: arr2[index],
                 child: Icon(
                   Icons.star,
                   color: Colors.yellow,
@@ -221,7 +225,7 @@ class _AccountPageState extends State<AccountPage>
 
                   _controller.forward().then((value) {
                     _controller = AnimationController(
-                      duration: Duration(seconds: 1),
+                      duration: Duration(seconds: 2),
                       vsync: this,
                     );
                     _animation = CurvedAnimation(
