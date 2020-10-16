@@ -1,5 +1,10 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
+
+import 'package:igroove_ui/managment/const_variables.dart';
 
 class AccountPage extends StatefulWidget {
   @override
@@ -8,158 +13,224 @@ class AccountPage extends StatefulWidget {
 
 class _AccountPageState extends State<AccountPage>
     with TickerProviderStateMixin {
-  bool animationOne = false;
-  bool animationTwo = false;
-  bool animationThree = false;
-  bool animationFour = false;
-  bool animationFive = false;
-  bool animationSix = false;
-  bool animationSeven = false;
   AnimationController _controller;
   Animation<Offset> _offsetAnimation;
+  Animation<double> _animation;
+  var random = new Random();
+  List<double> arr = [];
+
+  ConstVariables constVariables = ConstVariables();
+
+  Timer timer;
   @override
   void initState() {
+    print('random---- ${random.nextInt(600)}');
+    arr.add(random.nextDouble() * 600);
+    print(List<String>.generate(10, (counter) {
+      arr.add(random.nextDouble() * 600);
+    }));
+    print('arr $arr');
     super.initState();
+    animationBuilder();
+    timer = Timer.periodic(Duration(seconds: 9), (timer) {
+      setState(() {});
+      animationBuilder();
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    timer.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        color: Colors.blue,
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            ...List.generate(arr.length, (index) {
+              return Positioned(
+                top: arr[index],
+                left: arr[index],
+                child: Icon(
+                  Icons.star,
+                  color: Colors.yellow,
+                ),
+              );
+            }),
+            SlideTransition(
+              position: _offsetAnimation,
+              child: RotationTransition(
+                turns: _animation,
+                child: Image(
+                  height: 100,
+                  width: 100,
+                  image: AssetImage('assets/images/rocket.png'),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  animationBuilder() {
+    double coordinateX = ((constVariables.screenWidth - 100) / 200);
+    double coordinateY = ((constVariables.screenHeight - 200) / 200);
+
+    _animation = AlwaysStoppedAnimation(-90 / 360);
     _controller = AnimationController(
-      duration: Duration(seconds: 2),
+      duration: Duration(seconds: 1),
       vsync: this,
     );
     _offsetAnimation = Tween<Offset>(
-      begin: Offset(1.5, 3.0),
-      end: Offset(0.0, 3.0),
+      begin: Offset(0, 0),
+      end: Offset(-coordinateX, 0),
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: Curves.ease,
     ));
-    // setState(() {});
+
     _controller.forward().then((value) {
-      animationOne = true;
+      _animation = AlwaysStoppedAnimation(45 / 360);
       _controller = AnimationController(
-        duration: Duration(seconds: 2),
+        duration: Duration(seconds: 1),
         vsync: this,
       );
       _offsetAnimation = Tween<Offset>(
         begin: _offsetAnimation.value,
-        end: Offset(
-            _offsetAnimation.value.dx + 3, _offsetAnimation.value.dy - 3),
+        end: Offset(coordinateX, -coordinateY),
       ).animate(CurvedAnimation(
         parent: _controller,
         curve: Curves.ease,
       ));
 
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
 
       _controller.forward().then((value) {
-        animationTwo = true;
+        _animation = AlwaysStoppedAnimation(-90 / 360);
         _controller = AnimationController(
-          duration: Duration(seconds: 2),
+          duration: Duration(seconds: 1),
           vsync: this,
         );
         _offsetAnimation = Tween<Offset>(
           begin: _offsetAnimation.value,
-          end: Offset(_offsetAnimation.value.dx - 3, _offsetAnimation.value.dy),
+          end: Offset(-coordinateX, -coordinateY),
         ).animate(CurvedAnimation(
           parent: _controller,
           curve: Curves.ease,
         ));
-        setState(() {});
+        if (mounted) {
+          setState(() {});
+        }
 
         _controller.forward().then((value) {
-          animationThree = true;
+          _animation = AlwaysStoppedAnimation(135 / 360);
           _controller = AnimationController(
-            duration: Duration(seconds: 2),
+            duration: Duration(seconds: 1),
             vsync: this,
           );
           _offsetAnimation = Tween<Offset>(
             begin: _offsetAnimation.value,
-            end: Offset(
-                _offsetAnimation.value.dx + 3, _offsetAnimation.value.dy + 3),
+            end: Offset(coordinateX, 0),
           ).animate(CurvedAnimation(
             parent: _controller,
             curve: Curves.ease,
           ));
-          setState(() {});
+          if (mounted) {
+            setState(() {});
+          }
 
           _controller.forward().then((value) {
-            animationFour = true;
+            _animation = AlwaysStoppedAnimation(-135 / 360);
             _controller = AnimationController(
-              duration: Duration(seconds: 2),
+              duration: Duration(seconds: 1),
               vsync: this,
             );
             _offsetAnimation = Tween<Offset>(
               begin: _offsetAnimation.value,
-              end: Offset(
-                  _offsetAnimation.value.dx - 1.5, _offsetAnimation.value.dy),
+              end: Offset(-coordinateX, coordinateY),
             ).animate(CurvedAnimation(
               parent: _controller,
               curve: Curves.ease,
             ));
-            setState(() {});
+            if (mounted) {
+              setState(() {});
+            }
 
             _controller.forward().then((value) {
-              animationFive = true;
+              _animation = AlwaysStoppedAnimation(90 / 360);
               _controller = AnimationController(
-                duration: Duration(seconds: 2),
+                duration: Duration(seconds: 1),
                 vsync: this,
               );
               _offsetAnimation = Tween<Offset>(
                 begin: _offsetAnimation.value,
-                end: Offset(_offsetAnimation.value.dx - 1.5,
-                    _offsetAnimation.value.dy + 2),
+                end: Offset(coordinateX, coordinateY),
               ).animate(CurvedAnimation(
                 parent: _controller,
                 curve: Curves.ease,
               ));
-              setState(() {});
+              if (mounted) {
+                setState(() {});
+              }
 
               _controller.forward().then((value) {
-                animationSix = true;
+                _animation = AlwaysStoppedAnimation(-45 / 360);
                 _controller = AnimationController(
-                  duration: Duration(seconds: 2),
+                  duration: Duration(seconds: 1),
                   vsync: this,
                 );
                 _offsetAnimation = Tween<Offset>(
                   begin: _offsetAnimation.value,
-                  end: Offset(
-                      _offsetAnimation.value.dx + 3, _offsetAnimation.value.dy),
+                  end: Offset(-coordinateX, 0),
                 ).animate(CurvedAnimation(
                   parent: _controller,
                   curve: Curves.ease,
                 ));
-                setState(() {});
+                if (mounted) {
+                  setState(() {});
+                }
 
                 _controller.forward().then((value) {
-                  animationSeven = true;
+                  _animation = AlwaysStoppedAnimation(90 / 360);
                   _controller = AnimationController(
-                    duration: Duration(seconds: 2),
+                    duration: Duration(seconds: 1),
                     vsync: this,
                   );
                   _offsetAnimation = Tween<Offset>(
                     begin: _offsetAnimation.value,
-                    end: Offset(_offsetAnimation.value.dx - 1.5,
-                        _offsetAnimation.value.dy - 2),
+                    end: Offset(0, 0),
                   ).animate(CurvedAnimation(
                     parent: _controller,
                     curve: Curves.ease,
                   ));
-                  setState(() {});
+                  if (mounted) {
+                    setState(() {});
+                  }
 
                   _controller.forward().then((value) {
-                    animationSeven = true;
                     _controller = AnimationController(
                       duration: Duration(seconds: 1),
                       vsync: this,
-                    )..repeat(reverse: true);
-                    _offsetAnimation = Tween<Offset>(
-                      begin: _offsetAnimation.value,
-                      end: Offset(
-                          _offsetAnimation.value.dx, _offsetAnimation.value.dy),
-                    ).animate(CurvedAnimation(
+                    );
+                    _animation = CurvedAnimation(
                       parent: _controller,
                       curve: Curves.elasticOut,
-                    ));
+                    );
                     setState(() {});
-                    // _controller.forward();
+
+                    _controller.forward();
                   });
                 });
               });
@@ -168,67 +239,5 @@ class _AccountPageState extends State<AccountPage>
         });
       });
     });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(),
-        alignment: Alignment.topLeft,
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: SlideTransition(
-          position: _offsetAnimation,
-          child: RotationTransition(
-            turns: AlwaysStoppedAnimation(animationOne
-                ? (!animationTwo
-                        ? 45
-                        : !animationThree
-                            ? -90
-                            : !animationFour
-                                ? 135
-                                : !animationFive
-                                    ? -90
-                                    : !animationSix
-                                        ? -135
-                                        : !animationSeven ? 90 : -45) /
-                    360
-                : -90 / 360),
-            child: Image(
-              height: 100,
-              width: 100,
-              image: AssetImage('assets/images/rocket.png'),
-            ),
-          ),
-          // child: animationOne == false
-          //     ? Image(
-          //         height: 100,
-          //         width: 100,
-          //         image: AssetImage('assets/images/rocket.png'),
-          //       )
-          //     : RotationTransition(
-          //         turns: AlwaysStoppedAnimation(45 / 360),
-          //         child: Image(
-          //           height: 100,
-          //           width: 100,
-          //           image: AssetImage('assets/images/rocket.png'),
-          //         ),
-          //       )
-
-          // Image(
-          //   height: 100,
-          //   width: 100,
-          //   image: AssetImage('assets/images/newwave-logo-icon.png'),
-          // ),
-        ),
-      ),
-    );
   }
 }
