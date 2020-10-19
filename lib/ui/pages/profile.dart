@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:igroove_ui/base/app_keys.dart';
 import 'package:igroove_ui/managment/const_variables.dart';
-import 'package:igroove_ui/ui/pages/home.dart';
+import 'package:igroove_ui/ui/pages/login.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProfilePage extends StatefulWidget {

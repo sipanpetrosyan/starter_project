@@ -17,15 +17,17 @@ class _ProductsPageState extends State<ProductsPage> {
   bool twoChackBoxValue = false;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: bodyContent(),
-      // FloatingActionButton
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Add your onPressed code here!
-        },
-        child: Icon(Icons.navigation),
-        backgroundColor: Colors.green,
+    return SafeArea(
+      child: Scaffold(
+        body: bodyContent(),
+        // FloatingActionButton
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            // Add your onPressed code here!
+          },
+          child: Icon(Icons.navigation),
+          backgroundColor: Colors.green,
+        ),
       ),
     );
   }

@@ -117,27 +117,9 @@ class _MyTrendsState extends State<MyTrends> {
   @override
   Widget build(BuildContext context) {
     constVariables = ConstVariables();
-    return Material(
-      child: Scaffold(
-        bottomNavigationBar: bottomNavigationBar(),
-        body: bodyContent(),
-      ),
+    return Container(
+      child: SafeArea(child: trendsBody()),
     );
-  }
-
-  Widget bodyContent() {
-    switch (selectedTab) {
-      case 0:
-        return SafeArea(child: trendsBody());
-        break;
-      case 1:
-        return AccountPage();
-      case 2:
-        return ProductsPage();
-      case 3:
-        return ProfilePage();
-        break;
-    }
   }
 
   Widget trendsBody() {
@@ -662,53 +644,5 @@ class _MyTrendsState extends State<MyTrends> {
         initialDate: now,
         firstDate: DateTime(2000),
         lastDate: DateTime(2050));
-  }
-
-  Widget bottomNavigationBar() {
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      selectedItemColor: Color.fromARGB(255, 242, 113, 58),
-      unselectedItemColor: Color.fromARGB(255, 99, 99, 105),
-      showUnselectedLabels: true,
-      unselectedFontSize: 13,
-      selectedFontSize: 13,
-      elevation: 0,
-      currentIndex: selectedTab,
-      onTap: (index) {
-        setState(() {
-          selectedTab = index;
-        });
-      },
-      items: [
-        BottomNavigationBarItem(
-          title: Text(
-            'Trends',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          icon: Icon(Icons.equalizer),
-        ),
-        BottomNavigationBarItem(
-          title: Text(
-            'Account',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          icon: Icon(Icons.account_balance_wallet),
-        ),
-        BottomNavigationBarItem(
-          title: Text(
-            'Products',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          icon: Icon(Icons.music_video),
-        ),
-        BottomNavigationBarItem(
-          title: Text(
-            'Profile',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          icon: Icon(Icons.person),
-        ),
-      ],
-    );
   }
 }
