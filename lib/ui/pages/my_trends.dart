@@ -118,11 +118,9 @@ class _MyTrendsState extends State<MyTrends> {
   Widget build(BuildContext context) {
     constVariables = ConstVariables();
     return Material(
-      child: SafeArea(
-        child: Scaffold(
-          bottomNavigationBar: bottomNavigationBar(),
-          body: bodyContent(),
-        ),
+      child: Scaffold(
+        bottomNavigationBar: bottomNavigationBar(),
+        body: bodyContent(),
       ),
     );
   }
@@ -130,7 +128,7 @@ class _MyTrendsState extends State<MyTrends> {
   Widget bodyContent() {
     switch (selectedTab) {
       case 0:
-        return trendsBody();
+        return SafeArea(child: trendsBody());
         break;
       case 1:
         return AccountPage();

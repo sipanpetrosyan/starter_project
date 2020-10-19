@@ -27,10 +27,7 @@ class _AccountPageState extends State<AccountPage>
   @override
   void initState() {
     // arr.add(random.nextDouble() * constVariables.screenWidth);
-    List<String>.generate(10, (counter) {
-      arr.add(random.nextDouble() * constVariables.screenWidth);
-      arr2.add(random.nextDouble() * constVariables.screenWidth);
-    });
+
     Map<String, List> map1 = {'x': arr, 'y': arr2};
     // print('arr $arr');
     print('arr $map1');
@@ -40,6 +37,21 @@ class _AccountPageState extends State<AccountPage>
       setState(() {});
       animationBuilder();
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    print(MediaQuery.of(context).padding.bottom);
+    List<String>.generate(10, (counter) {
+      arr.add(random.nextDouble() * (constVariables.screenWidth - 40));
+      arr2.add(random.nextDouble() *
+          (constVariables.screenHeight -
+              MediaQuery.of(context).padding.top -
+              MediaQuery.of(context).padding.bottom -
+              56 -
+              40));
+    });
+    super.didChangeDependencies();
   }
 
   @override
@@ -61,10 +73,11 @@ class _AccountPageState extends State<AccountPage>
           children: [
             ...List.generate(arr.length, (index) {
               return Positioned(
-                top: arr[index],
-                left: arr2[index],
+                top: arr2[index],
+                left: arr[index],
                 child: Icon(
                   Icons.star,
+                  size: 40,
                   color: Colors.yellow,
                 ),
               );
