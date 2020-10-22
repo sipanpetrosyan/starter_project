@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:igroove_ui/managment/const_variables.dart';
+import 'package:igroove_ui/ui/pages/http_example.dart';
 
 class ProductsPage extends StatefulWidget {
   @override
@@ -47,6 +48,8 @@ class _ProductsPageState extends State<ProductsPage> {
                 // OutlineButton
                 OutlineButton(
                   onPressed: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => HttpPage()));
                     print('Received click');
                   },
                   child: Text('Click Me'),
