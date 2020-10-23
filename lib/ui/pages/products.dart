@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:igroove_ui/managment/const_variables.dart';
 import 'package:igroove_ui/ui/pages/http_example.dart';
+import 'package:igroove_ui/ui/pages/http_image.dart';
 
 class ProductsPage extends StatefulWidget {
   @override
@@ -75,7 +76,8 @@ class _ProductsPageState extends State<ProductsPage> {
                   padding: EdgeInsets.all(8.0),
                   splashColor: Colors.blueAccent,
                   onPressed: () {
-                    /*...*/
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => HttpImagePage()));
                   },
                   child: Text(
                     "Flat Button",

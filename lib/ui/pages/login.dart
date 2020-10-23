@@ -56,6 +56,7 @@ class _LoginPageState extends State<LoginPage> {
                 right: constVariables.screenWidth * 0.1,
                 top: constVariables.screenWidth * 0.3),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,8 +159,14 @@ class _LoginPageState extends State<LoginPage> {
                     },
                   ),
                 ),
+                Spacer(
+                    // flex: 2,
+                    ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 70),
+                  padding: EdgeInsets.only(
+                      bottom: constVariables.screenWidth > 320
+                          ? constVariables.screenHeight * 0.15
+                          : 0),
                   child: ButtonTheme(
                     minWidth: constVariables.screenWidth,
                     height: 50,

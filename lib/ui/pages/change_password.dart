@@ -60,9 +60,9 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 child: Text(
                   'Change password',
                   style: TextStyle(
-                    color: Colors.black,
-                    fontFamily: "Montserrat",
-                  ),
+                      color: Colors.black,
+                      fontFamily: "Montserrat",
+                      fontSize: constVariables.screenWidth > 320 ? 20 : 16),
                 ),
               ),
               SizedBox(

@@ -56,6 +56,7 @@ class _AccountPageState extends State<AccountPage>
 
   @override
   void dispose() {
+  
     _controller.dispose();
     timer.cancel();
     super.dispose();
