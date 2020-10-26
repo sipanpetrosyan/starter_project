@@ -1,8 +1,13 @@
 import 'package:form_field_validator/form_field_validator.dart';
 
 class Validator {
+  static final nameValidator =
+      RequiredValidator(errorText: 'First name can not be empty');
+  static final lastNameValidator =
+      RequiredValidator(errorText: 'Last name can not be empty');
+
   static final emailValidator = MultiValidator([
-    RequiredValidator(errorText: 'Enter valid email'),
+    RequiredValidator(errorText: 'Email can not be empty'),
     EmailValidator(errorText: 'Enter valid email address')
   ]);
 

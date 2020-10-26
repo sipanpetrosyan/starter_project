@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:igroove_ui/managment/const_variables.dart';
 import 'package:igroove_ui/ui/pages/http_example.dart';
 import 'package:igroove_ui/ui/pages/http_image.dart';
+import 'package:igroove_ui/ui/pages/post_request.dart';
 
 class ProductsPage extends StatefulWidget {
   @override
@@ -57,7 +58,7 @@ class _ProductsPageState extends State<ProductsPage> {
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 10),
-                  child: Text('OutlineButton'),
+                  child: Text('OutlineButton Get'),
                 )
               ],
             ),
@@ -86,7 +87,7 @@ class _ProductsPageState extends State<ProductsPage> {
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 10),
-                  child: Text('FlatButton'),
+                  child: Text('FlatButton Get'),
                 )
               ],
             ),
@@ -302,11 +303,14 @@ class _ProductsPageState extends State<ProductsPage> {
                   child: new Text('Material Button',
                       style:
                           new TextStyle(fontSize: 16.0, color: Colors.white)),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => PostRequestPage()));
+                  },
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 10),
-                  child: Text('MaterialButton'),
+                  child: Text('MaterialButton Post'),
                 )
               ],
             ),

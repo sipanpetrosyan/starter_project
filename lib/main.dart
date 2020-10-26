@@ -6,7 +6,7 @@ import 'package:igroove_ui/ui/pages/change_password.dart';
 import 'package:igroove_ui/ui/pages/forgot_pass.dart';
 import 'package:igroove_ui/ui/pages/home.dart';
 import 'package:igroove_ui/ui/pages/login.dart';
-import 'package:igroove_ui/ui/pages/my_trends.dart';
+import 'package:igroove_ui/ui/pages/register.dart';
 
 void main() {
   runApp(
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
       home: LoginPage(),
       routes: {
         'forgotPass': (context) => ForgotPassPage(),
-        // 'trends': (context) => MyTrends(),
+        'register': (context) => RegisterPage(),
         'homePage': (context) => HomePage(),
         'changeEmail': (context) => ChangeEmailPage(),
         'changePassword': (context) => ChangePasswordPage()

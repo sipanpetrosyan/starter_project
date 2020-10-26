@@ -1,44 +1,43 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:igroove_ui/managment/const_variables.dart';
 import 'package:igroove_ui/ui/pages/validator.dart';
+import 'package:sqflite/sqflite.dart';
 
-class LoginPage extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _RegisterPageState createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   String _email, _password;
-  TextEditingController emailController =
-      TextEditingController(text: "minas.93@mail.ru");
-  TextEditingController passController =
-      TextEditingController(text: "asdasdasd");
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passController = TextEditingController();
+  bool isNameValid = true;
+  bool isLastNameValid = true;
   bool isEmailValid = true;
   bool isPassValid = true;
+  String errorNameMesage;
+  String errorLastNameMesage;
   String errorEmailMesage;
   String errorPassMesage;
-  String errorEmail;
+
   ConstVariables constVariables;
+
   @override
   Widget build(BuildContext context) {
+    constVariables = ConstVariables();
     return Scaffold(
-      body: bodyContent(context),
+      body: forgotContent(),
     );
   }
 
-  @override
-  didChangeDependencies() {
-    super.didChangeDependencies();
-    constVariables = ConstVariables();
-  }
-
-  Widget bodyContent(BuildContext context) {
+  Widget forgotContent() {
     return GestureDetector(
       onTap: () {
-        FocusScope.of(context).requestFocus(FocusNode());
+        FocusScope.of(context).unfocus();
       },
       child: SingleChildScrollView(
         child: Container(
@@ -56,7 +55,6 @@ class _LoginPageState extends State<LoginPage> {
                 right: constVariables.screenWidth * 0.1,
                 top: constVariables.screenWidth * 0.3),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,15 +70,69 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 50, bottom: 35),
+                      padding: const EdgeInsets.only(top: 65, bottom: 10),
                       child: Text(
-                        'Welcome to \nNew Wave.',
+                        'Registration',
                         style: TextStyle(
-                          fontSize: 35,
+                          fontSize: 21,
                           fontWeight: FontWeight.w500,
                           color: Colors.white,
                           fontFamily: "Montserrat",
                         ),
+                      ),
+                    ),
+                    Theme(
+                      data: ThemeData(
+                        primaryColor: Colors.white,
+                        inputDecorationTheme: InputDecorationTheme(
+                          labelStyle: TextStyle(
+                              color: isNameValid ? Colors.white : Colors.red),
+                        ),
+                      ),
+                      child: TextFormField(
+                        controller: firstNameController,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontFamily: "Montserrat",
+                        ),
+                        decoration: InputDecoration(
+                          labelText:
+                              isNameValid ? 'First name' : errorNameMesage,
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 130, 130, 130)),
+                          ),
+                        ),
+                        onChanged: (input) => _email = input,
+                      ),
+                    ),
+                    Theme(
+                      data: ThemeData(
+                        primaryColor: Colors.white,
+                        inputDecorationTheme: InputDecorationTheme(
+                          labelStyle: TextStyle(
+                              color:
+                                  isLastNameValid ? Colors.white : Colors.red),
+                        ),
+                      ),
+                      child: TextFormField(
+                        controller: lastNameController,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontFamily: "Montserrat",
+                        ),
+                        decoration: InputDecoration(
+                          labelText: isLastNameValid
+                              ? 'Last name'
+                              : errorLastNameMesage,
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 130, 130, 130)),
+                          ),
+                        ),
+                        onChanged: (input) => _email = input,
                       ),
                     ),
                     Theme(
@@ -105,9 +157,7 @@ class _LoginPageState extends State<LoginPage> {
                                 color: Color.fromARGB(255, 130, 130, 130)),
                           ),
                         ),
-                        onChanged: (input) {
-                          _email = input;
-                        },
+                        onChanged: (input) => _email = input,
                       ),
                     ),
                     Theme(
@@ -142,28 +192,9 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ],
                 ),
-                Container(
-                  width: constVariables.screenWidth * 0.8,
-                  alignment: Alignment.centerRight,
-                  padding: const EdgeInsets.only(top: 7),
-                  child: GestureDetector(
-                    child: Text(
-                      'Forgot your password?',
-                      style: TextStyle(
-                          color: Color.fromARGB(255, 188, 166, 188),
-                          fontFamily: "Montserrat",
-                          fontSize: 13),
-                    ),
-                    onTap: () {
-                      Navigator.of(context).pushNamed('forgotPass');
-                    },
-                  ),
-                ),
-                Spacer(
-                    // flex: 2,
-                    ),
                 Padding(
-                  padding: EdgeInsets.only(bottom: 20),
+                  padding:
+                      EdgeInsets.only(top: constVariables.screenWidth * 0.15),
                   child: ButtonTheme(
                     minWidth: constVariables.screenWidth,
                     height: 50,
@@ -171,24 +202,30 @@ class _LoginPageState extends State<LoginPage> {
                       color: Color.fromARGB(255, 232, 107, 44),
                       textColor: Colors.white,
                       onPressed: () {
+                        errorNameMesage = Validator.nameValidator
+                            .call(firstNameController.text);
+                        errorLastNameMesage = Validator.lastNameValidator
+                            .call(lastNameController.text);
                         errorEmailMesage =
                             Validator.emailValidator.call(emailController.text);
                         errorPassMesage = Validator.passwordValidator
                             .call(passController.text);
+                        isNameValid = errorNameMesage == null;
+                        isLastNameValid = errorLastNameMesage == null;
                         isEmailValid = errorEmailMesage == null;
                         isPassValid = errorPassMesage == null;
-
                         setState(() {});
-                        print(emailController.text);
-                        if (isEmailValid && isPassValid) {
-                          Navigator.of(context).pushNamed('homePage');
-                          emailController = TextEditingController();
-                          passController = TextEditingController();
+                        if (isNameValid &&
+                            isLastNameValid &&
+                            isEmailValid &&
+                            isPassValid) {
+                          Navigator.pop(context);
                         }
                       },
                       child: Text(
-                        "Login",
+                        "Registration",
                         style: TextStyle(
+                          fontSize: 16,
                           fontFamily: "Montserrat",
                         ),
                       ),
@@ -196,20 +233,18 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(
-                      bottom: constVariables.screenWidth > 320
-                          ? constVariables.screenHeight * 0.15
-                          : 0),
+                  padding: const EdgeInsets.only(top: 20),
                   child: GestureDetector(
                     child: Text(
-                      'Apply for account',
+                      'Back to Login',
                       style: TextStyle(
                         color: Colors.white,
+                        fontSize: 17,
                         fontFamily: "Montserrat",
                       ),
                     ),
                     onTap: () {
-                      Navigator.of(context).pushNamed('register');
+                      Navigator.pop(context);
                     },
                   ),
                 )
