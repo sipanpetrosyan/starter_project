@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:igroove_ui/db/database.dart';
 import 'package:igroove_ui/managment/const_variables.dart';
+import 'package:igroove_ui/models/user_db.dart';
 import 'package:igroove_ui/ui/pages/validator.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:uuid/uuid.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -10,11 +13,15 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  String _email, _password;
-  final TextEditingController firstNameController = TextEditingController();
-  final TextEditingController lastNameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passController = TextEditingController();
+  String _firstName, _lastName, _email, _password;
+  final TextEditingController firstNameController =
+      TextEditingController(text: "DSf");
+  final TextEditingController lastNameController =
+      TextEditingController(text: "sdf");
+  final TextEditingController emailController =
+      TextEditingController(text: "dfsdfsd@df.df");
+  final TextEditingController passController =
+      TextEditingController(text: "dsfsdfsdfsdfsdf");
   bool isNameValid = true;
   bool isLastNameValid = true;
   bool isEmailValid = true;
@@ -25,6 +32,11 @@ class _RegisterPageState extends State<RegisterPage> {
   String errorPassMesage;
 
   ConstVariables constVariables;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +116,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 color: Color.fromARGB(255, 130, 130, 130)),
                           ),
                         ),
-                        onChanged: (input) => _email = input,
+                        onChanged: (input) => _firstName = input,
                       ),
                     ),
                     Theme(
@@ -132,7 +144,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 color: Color.fromARGB(255, 130, 130, 130)),
                           ),
                         ),
-                        onChanged: (input) => _email = input,
+                        onChanged: (input) => _lastName = input,
                       ),
                     ),
                     Theme(
@@ -171,9 +183,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       child: TextFormField(
                         controller: passController,
                         keyboardType: TextInputType.text,
-                        validator: (val) =>
-                            MatchValidator(errorText: 'passwords do not match')
-                                .validateMatch(val, _password),
+                        // validator: (val) =>
+                        //     MatchValidator(errorText: 'passwords do not match')
+                        //         .validateMatch(val, _password),
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,
@@ -219,6 +231,21 @@ class _RegisterPageState extends State<RegisterPage> {
                             isLastNameValid &&
                             isEmailValid &&
                             isPassValid) {
+                          // DatabaseProvider.db.getUsers();
+
+                          String id = Uuid().v4();
+                          User user = User(
+                              id: id,
+                              firstName: firstNameController.text,
+                              lastName: lastNameController.text,
+                              email: emailController.text,
+                              password: passController.text);
+                          DatabaseProvider.db.insert(user).then((value) {
+                            DatabaseProvider.db.getUser(id).then((user) {
+                              print(user.firstName);
+                            });
+                          });
+
                           Navigator.pop(context);
                         }
                       },

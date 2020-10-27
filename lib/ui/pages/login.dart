@@ -2,8 +2,11 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:igroove_ui/db/database.dart';
 import 'package:igroove_ui/managment/const_variables.dart';
+import 'package:igroove_ui/models/user_db.dart';
 import 'package:igroove_ui/ui/pages/validator.dart';
+import 'package:uuid/uuid.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -16,12 +19,14 @@ class _LoginPageState extends State<LoginPage> {
       TextEditingController(text: "minas.93@mail.ru");
   TextEditingController passController =
       TextEditingController(text: "asdasdasd");
+  String emailTest;
   bool isEmailValid = true;
   bool isPassValid = true;
   String errorEmailMesage;
   String errorPassMesage;
   String errorEmail;
   ConstVariables constVariables;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -178,13 +183,41 @@ class _LoginPageState extends State<LoginPage> {
                         isEmailValid = errorEmailMesage == null;
                         isPassValid = errorPassMesage == null;
 
-                        setState(() {});
                         print(emailController.text);
+                        emailTest = emailController.text;
+
                         if (isEmailValid && isPassValid) {
+                          // DatabaseProvider.db.getUsers().then((userList) {
+                          //   print(userList.length);
+                          //   print(emailController.text);
+                          //   userList.forEach((el) {
+                          //     if (emailTest != el.email) {
+                          //       emailController.text = '';
+                          //       print('error Email');
+                          //     } else {
+                          //       Navigator.of(context).pushNamed('homePage');
+                          //     }
+                          //   });
+                          // });
+
+                          // String id = Uuid().v4();
+                          // User user = User(
+                          //     id: id,
+                          //     email: emailController.text,
+                          //     password: passController.text);
+
+                          // DatabaseProvider.db
+                          //     .getUser(emailController.text)
+                          //     .then((user) {
+                          //   print('email - ${user.email}');
+                          //   Navigator.of(context).pushNamed('homePage');
+                          // });
+
+                          // emailController = TextEditingController();
+                          // passController = TextEditingController();
                           Navigator.of(context).pushNamed('homePage');
-                          emailController = TextEditingController();
-                          passController = TextEditingController();
                         }
+                        setState(() {});
                       },
                       child: Text(
                         "Login",
