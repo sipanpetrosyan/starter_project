@@ -1,3 +1,5 @@
+import 'package:igroove_ui/managment/app_manager.dart';
+import 'package:igroove_ui/models/basic_api_response.dart';
 import 'package:igroove_ui/models/user_db.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -8,6 +10,7 @@ class DatabaseProvider {
   static const String LAST_NAME = "last_name";
   static const String EMAIL = "email";
   static const String PASSWORD = "password";
+  static const String IMAGE = "image_url";
 
   DatabaseProvider._();
   static final DatabaseProvider db = DatabaseProvider._();
@@ -38,7 +41,8 @@ class DatabaseProvider {
           $FIRST_NAME TEXT,
           $LAST_NAME TEXT,
           $EMAIL TEXT,
-          $PASSWORD TEXT
+          $PASSWORD TEXT,
+          $IMAGE TEXT
           )''',
         );
       },
@@ -63,21 +67,133 @@ class DatabaseProvider {
     return userList;
   }
 
-  Future<User> getUser(String email) async {
+  Future<BasicResponse<User>> login(String email, String password) async {
     final db = await database;
-    var userMap = await db.query(TABLE_USER,
-        columns: [COLUMN_ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD],
-        whereArgs: [email],
-        where: '$EMAIL = ?');
+    var userMap;
+    //  = await db.query(TABLE_USER,
+    //     columns: [COLUMN_ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD],
+    //     whereArgs: [email],
+    //     where: '$EMAIL = ?');
 
-    User user = User.fromMap(userMap.first);
+    String error;
 
-    return user;
+    try {
+      userMap = await db.rawQuery('''
+      SELECT *
+      FROM users
+      WHERE ($EMAIL = '$email' AND $PASSWORD = '$password')
+    ''');
+    } catch (e) {
+      error = e.toString();
+    }
+
+    User user;
+    if (userMap != null && userMap.length != 0) {
+      user = User.fromMap(userMap.first);
+    }
+
+    return BasicResponse(error: error, response: user);
   }
 
-  Future<User> insert(User user) async {
+  Future<BasicResponse<User>> getUser(String uid) async {
     final db = await database;
-    await db.insert(TABLE_USER, user.toMap());
-    return user;
+    var userMap;
+
+    String error;
+
+    try {
+      userMap = await db.rawQuery('''
+      SELECT *
+      FROM users
+      WHERE ($COLUMN_ID = '$uid' )
+    ''');
+    } catch (e) {
+      error = e.toString();
+    }
+
+    User user;
+    if (userMap != null && userMap.length != 0) {
+      user = User.fromMap(userMap.first);
+    }
+
+    return BasicResponse(error: error, response: user);
   }
+
+  Future<int> insert(Map user) async {
+    final db = await database;
+    return await db.insert(TABLE_USER, user.cast<String, dynamic>());
+  }
+
+  // Future<BasicResponse<User>> changePassword({String newPassword}) async {
+  //   final db = await database;
+
+  //   String userId = AppManager().userMeneger.user.id;
+
+  //   int result = await db.rawUpdate('''
+  //   UPDATE $TABLE_USER
+  //   SET $PASSWORD = '$newWalue'
+  //   WHERE $COLUMN_ID = '$userId'
+  //   ''');
+
+  //   if (result == 1) {
+  //     return await this.getUser(userId);
+  //   } else {
+  //     return BasicResponse(error: "Something went wrong", response: null);
+  //   }
+  // }
+
+  Future<BasicResponse<User>> update({String field, dynamic newWalue}) async {
+    final db = await database;
+
+    String userId = AppManager().userMeneger.user.id;
+
+    int result = await db.rawUpdate('''
+    UPDATE $TABLE_USER 
+    SET $field = '$newWalue'
+    WHERE $COLUMN_ID = '$userId'
+    ''');
+
+    if (result == 1) {
+      return await this.getUser(userId);
+    } else {
+      return BasicResponse(error: "Something went wrong", response: null);
+    }
+  }
+
+  Future<BasicResponse<User>> changeEmail(
+      {String newEmail, String password}) async {
+    final db = await database;
+
+    String userId = AppManager().userMeneger.user.id;
+
+    int result = await db.rawUpdate('''
+    UPDATE $TABLE_USER 
+    SET $EMAIL = '$newEmail'
+    WHERE $EMAIL = '${AppManager().userMeneger.user.email}' AND $PASSWORD = '$password'
+    ''');
+
+    if (result == 1) {
+      return await this.getUser(userId);
+    } else {
+      return BasicResponse(error: "Password is wrong", response: null);
+    }
+  }
+
+  // Future<BasicResponse<User>> update({String field, dynamic newWalue}) async {
+  //   final db = await database;
+
+  //   String userId = AppManager().userMeneger.user.id;
+
+  //   int result = await db.rawUpdate('''
+  //   UPDATE $TABLE_USER
+  //   SET $field = '$newWalue'
+  //   WHERE $COLUMN_ID = '$userId'
+  //   ''');
+
+  //   if (result == 1) {
+  //     return await this.getUser(userId);
+  //   } else {
+  //     return BasicResponse(error: "Something went wrong", response: null);
+  //   }
+  // }
 }

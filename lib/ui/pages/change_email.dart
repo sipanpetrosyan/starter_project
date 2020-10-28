@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:igroove_ui/db/database.dart';
+import 'package:igroove_ui/managment/app_manager.dart';
 import 'package:igroove_ui/managment/const_variables.dart';
 import 'package:igroove_ui/ui/pages/validator.dart';
 
@@ -11,8 +13,11 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
   ConstVariables constVariables = ConstVariables();
   String _email;
   final TextEditingController emailController = TextEditingController();
+  final TextEditingController passController = TextEditingController();
   bool isEmailValid = true;
+  bool isPassValid = true;
   String errorEmailMesage;
+  String errorPassMesage;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -122,6 +127,7 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
                       primaryColor: Color.fromARGB(255, 244, 129, 79),
                     ),
                     child: TextFormField(
+                      controller: passController,
                       keyboardType: TextInputType.text,
                       style: TextStyle(
                         color: Colors.black,
@@ -129,9 +135,11 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
                         fontFamily: "Montserrat",
                       ),
                       decoration: InputDecoration(
-                        labelText: 'Password',
-                        labelStyle:
-                            TextStyle(color: Color.fromARGB(255, 244, 129, 79)),
+                        labelText: isPassValid ? 'Password' : errorPassMesage,
+                        labelStyle: TextStyle(
+                            color: isPassValid
+                                ? Color.fromARGB(255, 244, 129, 79)
+                                : Colors.red),
                         enabledBorder: UnderlineInputBorder(
                           borderSide: BorderSide(
                               color: Color.fromARGB(255, 200, 200, 200)),
@@ -166,14 +174,28 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
               right: constVariables.screenWidth * 0.14,
               bottom: 12,
               child: GestureDetector(
-                onTap: () {
+                onTap: () async {
                   errorEmailMesage =
                       Validator.emailValidator.call(emailController.text);
                   isEmailValid = errorEmailMesage == null;
+                  errorPassMesage =
+                      Validator.passwordValidator.call(passController.text);
+                  isPassValid = errorPassMesage == null;
                   setState(() {});
-                  if (isEmailValid) {
-                    print('Save');
-                    Navigator.pop(context);
+                  if (isEmailValid && isPassValid) {
+                    print(passController.text);
+
+                    String error =
+                        await AppManager().userMeneger.changeDbUserEmail(newEmail:emailController.text, password: passController.text);
+
+                    if (error != null) {
+                      print(error);
+
+                      errorPassMesage = error;
+                      setState(() {});
+                    } else {
+                      Navigator.pop(context);
+                    }
                   }
                 },
                 child: Container(
@@ -182,13 +204,14 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
                     borderRadius: BorderRadius.circular(5),
                   ),
                   child: Center(
-                      child: Text(
-                    'Save',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: "Montserrat",
-                        fontWeight: FontWeight.bold),
-                  )),
+                    child: Text(
+                      'Save',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: "Montserrat",
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
                 ),
               ),
             )

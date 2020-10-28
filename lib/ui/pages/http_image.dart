@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:igroove_ui/api/igroove_api.dart';
+import 'package:igroove_ui/managment/app_manager.dart';
 import 'package:igroove_ui/managment/user.dart';
 
 class HttpImagePage extends StatefulWidget {
@@ -11,28 +13,21 @@ class _HttpImagePageState extends State<HttpImagePage> {
   bool isFailed = true;
   bool isNotFound = true;
   bool isUnothorized = true;
-  UserMeneger _userMeneger = UserMeneger();
+  bool errorApi = false;
+  String errorText;
+  AppManager _appManager = AppManager();
 
   @override
   void initState() {
     super.initState();
-    _userMeneger.getUser().then((value) {
-      isLoading = false;
-      if (value == 'failed') {
-        print('failed');
-        isFailed = false;
+    _appManager.userMeneger.getUserAPI().then((value) {
+      if (value != null) {
+        errorApi = true;
+        errorText = value;
       }
-      if (value == 'Not Found') {
-        print('Not Found');
-        isNotFound = false;
-      }
-      if (value == 'Unothorized') {
-        print('Unothorized');
-        isUnothorized = false;
-      }
-      if (mounted) {
-        setState(() {});
-      }
+      setState(() {
+        isLoading = false;
+      });
     });
   }
 
@@ -56,24 +51,19 @@ class _HttpImagePageState extends State<HttpImagePage> {
   Widget body() {
     return isLoading
         ? Center(child: CircularProgressIndicator())
-        : (isFailed && isNotFound && isUnothorized)
+        : (!errorApi)
             ? GridView.count(
                 crossAxisCount: 10,
                 children: List.generate(
-                    _userMeneger.userList == null
+                    _appManager.userMeneger.testList == null
                         ? 0
-                        : _userMeneger.userList.length, (index) {
+                        : _appManager.userMeneger.testList.length, (index) {
                   return Center(
                     child: Image.network(
-                        _userMeneger.userList[index].thumbnailUrl),
+                        _appManager.userMeneger.testList[index].thumbnailUrl),
                   );
                 }),
               )
-            : Center(
-                child: Text(!isFailed
-                    ? 'Failed !!!'
-                    : !isNotFound
-                        ? 'Not Found !!!'
-                        : !isUnothorized ? 'Unothorized !!!' : null));
+            : Center(child: Text(errorText));
   }
 }

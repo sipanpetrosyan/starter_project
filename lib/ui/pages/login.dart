@@ -3,7 +3,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:igroove_ui/db/database.dart';
+import 'package:igroove_ui/managment/app_manager.dart';
 import 'package:igroove_ui/managment/const_variables.dart';
+// import 'package:igroove_ui/managment/user_login_inf.dart';
 import 'package:igroove_ui/models/user_db.dart';
 import 'package:igroove_ui/ui/pages/validator.dart';
 import 'package:uuid/uuid.dart';
@@ -16,10 +18,9 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   String _email, _password;
   TextEditingController emailController =
-      TextEditingController(text: "minas.93@mail.ru");
+      TextEditingController(text: "minas@gmail.com");
   TextEditingController passController =
-      TextEditingController(text: "asdasdasd");
-  String emailTest;
+      TextEditingController(text: "qwertyui");
   bool isEmailValid = true;
   bool isPassValid = true;
   String errorEmailMesage;
@@ -184,20 +185,23 @@ class _LoginPageState extends State<LoginPage> {
                         isPassValid = errorPassMesage == null;
 
                         print(emailController.text);
-                        emailTest = emailController.text;
 
                         if (isEmailValid && isPassValid) {
                           // DatabaseProvider.db.getUsers().then((userList) {
                           //   print(userList.length);
                           //   print(emailController.text);
-                          //   userList.forEach((el) {
-                          //     if (emailTest != el.email) {
-                          //       emailController.text = '';
-                          //       print('error Email');
-                          //     } else {
-                          //       Navigator.of(context).pushNamed('homePage');
-                          //     }
-                          //   });
+
+                          //   User loggedUser = userList.firstWhere(
+                          //     (element) =>
+                          //         element.email == emailController.text,
+                          //     orElse: () => null,
+                          //   );
+
+                          //   if (loggedUser == null) {
+                          //     emailController.text = '';
+                          //   } else {
+                          //     Navigator.of(context).pushNamed('homePage');
+                          //   }
                           // });
 
                           // String id = Uuid().v4();
@@ -206,16 +210,23 @@ class _LoginPageState extends State<LoginPage> {
                           //     email: emailController.text,
                           //     password: passController.text);
 
-                          // DatabaseProvider.db
-                          //     .getUser(emailController.text)
-                          //     .then((user) {
-                          //   print('email - ${user.email}');
-                          //   Navigator.of(context).pushNamed('homePage');
-                          // });
+                         AppManager().userMeneger
+                              .login(
+                                  emailController.text, passController.text)
+                              .then((error) {
+                            if (error == null) {
+                              // AppManager().userMeneger.user = user;
+                              Navigator.of(context).pushNamed('homePage');
+                            } else {
+                              emailController.text = '';
+                              passController.text = '';
+                            }
+                          });
 
+                          // AppManager().userMeneger.user;
                           // emailController = TextEditingController();
                           // passController = TextEditingController();
-                          Navigator.of(context).pushNamed('homePage');
+                          // Navigator.of(context).pushNamed('homePage');
                         }
                         setState(() {});
                       },

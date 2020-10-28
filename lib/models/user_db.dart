@@ -5,9 +5,9 @@ class User {
    String firstName;
    String lastName;
    String email;
-   String password;
+   String profileImageUrl;
 
-  User( {this.id,this.firstName, this.lastName, this.email, this.password});
+  User( {this.id,this.firstName, this.lastName, this.email, this.profileImageUrl});
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{
@@ -15,7 +15,7 @@ class User {
       DatabaseProvider.COLUMN_ID: id,
       DatabaseProvider.LAST_NAME: lastName,
       DatabaseProvider.EMAIL: email,
-      DatabaseProvider.PASSWORD: password
+      DatabaseProvider.IMAGE: profileImageUrl
     };
    
 
@@ -27,6 +27,6 @@ class User {
     this.firstName = map[DatabaseProvider.FIRST_NAME];
     lastName = map[DatabaseProvider.LAST_NAME];
     email = map[DatabaseProvider.EMAIL];
-    password = map[DatabaseProvider.PASSWORD];
+    profileImageUrl = map[DatabaseProvider.IMAGE];
   }
 }

@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:igroove_ui/base/app_keys.dart';
+import 'package:igroove_ui/db/database.dart';
+import 'package:igroove_ui/managment/app_manager.dart';
 import 'package:igroove_ui/managment/const_variables.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -12,6 +14,13 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   ConstVariables constVariables = ConstVariables();
+  TextEditingController firstName =
+      TextEditingController(text: AppManager().userMeneger.user.firstName);
+  TextEditingController lastName =
+      TextEditingController(text: AppManager().userMeneger.user.lastName);
+  TextEditingController email =
+      TextEditingController(text: AppManager().userMeneger.user.email);
+  TextEditingController password = TextEditingController(text: "password");
   FocusNode focusNode = FocusNode();
   File _image;
   int _value = 1;
@@ -45,11 +54,22 @@ class _ProfilePageState extends State<ProfilePage> {
             actions: [
               Padding(
                 padding: const EdgeInsets.only(top: 20, right: 20),
-                child: Text(
-                  'Save',
-                  style: TextStyle(
-                    color: Color.fromARGB(255, 244, 129, 79),
-                    fontFamily: "Montserrat",
+                child: GestureDetector(
+                  onTap: () {
+                    print(firstName.text);
+                    AppManager().userMeneger.updateDbUser(
+                        field: DatabaseProvider.FIRST_NAME,
+                        newWalue: firstName.text);
+                    AppManager().userMeneger.updateDbUser(
+                        field: DatabaseProvider.LAST_NAME,
+                        newWalue: lastName.text);
+                  },
+                  child: Text(
+                    'Save',
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 244, 129, 79),
+                      fontFamily: "Montserrat",
+                    ),
                   ),
                 ),
               )
@@ -84,10 +104,14 @@ class _ProfilePageState extends State<ProfilePage> {
                       top: 0,
                       child: Container(
                         color: Colors.white,
-                        child: _image != null
+                        child: AppManager().userMeneger.user.profileImageUrl !=
+                                null
                             ? ClipRRect(
                                 child: Image.file(
-                                  _image,
+                                  File(AppManager()
+                                      .userMeneger
+                                      .user
+                                      .profileImageUrl),
                                   fit: BoxFit.fitHeight,
                                 ),
                               )
@@ -180,6 +204,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           primaryColor: Colors.purple[500],
                         ),
                         child: TextFormField(
+                          controller: firstName,
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 16,
@@ -208,6 +233,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           primaryColor: Colors.purple[500],
                         ),
                         child: TextFormField(
+                          controller: lastName,
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 16,
@@ -236,6 +262,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           primaryColor: Color.fromARGB(255, 200, 200, 200),
                         ),
                         child: TextFormField(
+                          controller: email,
                           onTap: () {
                             print('Email');
                             setState(() {
@@ -255,12 +282,9 @@ class _ProfilePageState extends State<ProfilePage> {
                               borderSide: BorderSide(
                                   color: Color.fromARGB(255, 200, 200, 200)),
                             ),
-                            suffixIcon: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Icon(Icons.chevron_right),
-                              ],
-                            ),
+                            suffixIconConstraints:
+                                BoxConstraints(maxHeight: 20, maxWidth: 20),
+                            suffixIcon: Icon(Icons.chevron_right),
                           ),
                         ),
                       ),
@@ -279,6 +303,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           primaryColor: Color.fromARGB(255, 200, 200, 200),
                         ),
                         child: TextFormField(
+                          obscureText: true,
+                          controller: password,
                           onTap: () {
                             setState(() {
                               FocusScope.of(context)
@@ -297,12 +323,9 @@ class _ProfilePageState extends State<ProfilePage> {
                               borderSide: BorderSide(
                                   color: Color.fromARGB(255, 200, 200, 200)),
                             ),
-                            suffixIcon: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Icon(Icons.chevron_right),
-                              ],
-                            ),
+                            suffixIconConstraints:
+                                BoxConstraints(maxHeight: 20, maxWidth: 20),
+                            suffixIcon: Icon(Icons.chevron_right),
                           ),
                         ),
                       ),
@@ -444,17 +467,35 @@ class _ProfilePageState extends State<ProfilePage> {
     PickedFile image = await ImagePicker()
         .getImage(source: ImageSource.camera, imageQuality: 50);
 
-    setState(() {
-      _image = File(image.path);
-    });
+    String error = await AppManager()
+        .userMeneger
+        .updateDbUser(field: DatabaseProvider.IMAGE, newWalue: image.path);
+
+    if (error != null) {
+      print(error);
+
+      ///Show error
+    }
+
+    setState(() {});
   }
 
   _imgFromGallery() async {
     PickedFile image = await ImagePicker()
         .getImage(source: ImageSource.gallery, imageQuality: 50);
 
-    setState(() {
-      _image = File(image.path);
-    });
+    String error = await AppManager()
+        .userMeneger
+        .updateDbUser(field: DatabaseProvider.IMAGE, newWalue: image.path);
+
+    if (error != null) {
+      print(error);
+
+      ///Show error
+    }
+
+    setState(() {});
+
+    print(AppManager().userMeneger.user.profileImageUrl);
   }
 }

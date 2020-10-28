@@ -234,16 +234,18 @@ class _RegisterPageState extends State<RegisterPage> {
                           // DatabaseProvider.db.getUsers();
 
                           String id = Uuid().v4();
-                          User user = User(
-                              id: id,
-                              firstName: firstNameController.text,
-                              lastName: lastNameController.text,
-                              email: emailController.text,
-                              password: passController.text);
-                          DatabaseProvider.db.insert(user).then((value) {
-                            DatabaseProvider.db.getUser(id).then((user) {
-                              print(user.firstName);
-                            });
+
+                          DatabaseProvider.db.insert({
+                            DatabaseProvider.FIRST_NAME:
+                                firstNameController.text,
+                            DatabaseProvider.COLUMN_ID: id,
+                            DatabaseProvider.LAST_NAME: lastNameController.text,
+                            DatabaseProvider.EMAIL: emailController.text,
+                            DatabaseProvider.PASSWORD: passController.text,
+                          }).then((value) {
+                            // DatabaseProvider.db.getUser(id).then((user) {
+                            //   print(user.firstName);
+                            // });
                           });
 
                           Navigator.pop(context);

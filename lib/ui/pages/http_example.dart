@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:igroove_ui/managment/app_manager.dart';
 import 'package:igroove_ui/managment/user.dart';
-import 'package:igroove_ui/models/user.dart';
+import 'package:igroove_ui/models/test_api.dart';
 
 import '../../const.dart';
 
@@ -16,38 +16,24 @@ class HttpPage extends StatefulWidget {
 
 class _HttpPageState extends State<HttpPage> {
   bool isLoading = true;
-  bool isFailed = true;
-  bool isNotFound = true;
-  bool isUnothorized = true;
+  bool errorApi = false;
+  String errorText;
 
   AppManager _appManager = AppManager();
 
   @override
   void initState() {
     super.initState();
-    if (!_appManager.userMeneger.dataLoaded) {
-      _appManager.userMeneger.getUser().then((value) {
-        _appManager.userMeneger.dataLoaded = true;
+    isLoading = true;
+    _appManager.userMeneger.getUserAPI().then((value) {
+      if (value != null) {
+        errorApi = true;
+        errorText = value;
+      }
+      setState(() {
         isLoading = false;
-        if (value == 'failed') {
-          print('failed');
-          isFailed = false;
-        }
-        if (value == 'Not Found') {
-          print('Not Found');
-          isNotFound = false;
-        }
-        if (value == 'Unothorized') {
-          print('Unothorized');
-          isUnothorized = false;
-        }
-        if (mounted) {
-          setState(() {});
-        }
       });
-    } else {
-      isLoading = false;
-    }
+    });
   }
 
   @override
@@ -70,11 +56,11 @@ class _HttpPageState extends State<HttpPage> {
   Widget body() {
     return isLoading
         ? Center(child: CircularProgressIndicator())
-        : (isFailed && isNotFound && isUnothorized)
+        : (!errorApi)
             ? ListView.builder(
-                itemCount: _appManager.userMeneger.userList == null
+                itemCount: _appManager.userMeneger.testList == null
                     ? 0
-                    : _appManager.userMeneger.userList.length,
+                    : _appManager.userMeneger.testList.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10),
@@ -85,10 +71,10 @@ class _HttpPageState extends State<HttpPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                                '${_appManager.userMeneger.userList[index].id} '),
+                                '${_appManager.userMeneger.testList[index].id} '),
                             Expanded(
                                 child: Text(
-                                    '${_appManager.userMeneger.userList[index].title}')),
+                                    '${_appManager.userMeneger.testList[index].title}')),
                           ],
                         ),
                       ),
@@ -96,11 +82,6 @@ class _HttpPageState extends State<HttpPage> {
                   );
                 },
               )
-            : Center(
-                child: Text(!isFailed
-                    ? 'Failed !!!'
-                    : !isNotFound
-                        ? 'Not Found !!!'
-                        : !isUnothorized ? 'Unothorized !!!' : null));
+            : Center(child: Text(errorText));
   }
 }
