@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:igroove_ui/api/igroove_api.dart';
 import 'package:igroove_ui/managment/app_manager.dart';
-import 'package:igroove_ui/managment/user.dart';
 
 class HttpImagePage extends StatefulWidget {
   @override

@@ -67,6 +67,30 @@ class DatabaseProvider {
     return userList;
   }
 
+ Future<BasicResponse<User>> getEmail(String email) async {
+    final db = await database;
+    var userMap;
+
+    String error;
+
+    try {
+      userMap = await db.rawQuery('''
+      SELECT *
+      FROM users
+      WHERE ($EMAIL = '$email' )
+    ''');
+    } catch (e) {
+      error = e.toString();
+    }
+
+    User user;
+    if (userMap != null && userMap.length != 0) {
+      user = User.fromMap(userMap.first);
+    }
+
+    return BasicResponse(error: error, response: user);
+  }
+
   Future<BasicResponse<User>> login(String email, String password) async {
     final db = await database;
     var userMap;
@@ -90,6 +114,8 @@ class DatabaseProvider {
     User user;
     if (userMap != null && userMap.length != 0) {
       user = User.fromMap(userMap.first);
+    } else {
+      error = "User not found.";
     }
 
     return BasicResponse(error: error, response: user);
@@ -170,6 +196,25 @@ class DatabaseProvider {
     UPDATE $TABLE_USER 
     SET $EMAIL = '$newEmail'
     WHERE $EMAIL = '${AppManager().userMeneger.user.email}' AND $PASSWORD = '$password'
+    ''');
+
+    if (result == 1) {
+      return await this.getUser(userId);
+    } else {
+      return BasicResponse(error: "Password is wrong", response: null);
+    }
+  }
+
+  Future<BasicResponse<User>> changePassword(
+      {String newPassword, String password}) async {
+    final db = await database;
+
+    String userId = AppManager().userMeneger.user.id;
+
+    int result = await db.rawUpdate('''
+    UPDATE $TABLE_USER 
+    SET $PASSWORD = '$newPassword'
+    WHERE $COLUMN_ID = '${AppManager().userMeneger.user.id}' AND $PASSWORD = '$password'
     ''');
 
     if (result == 1) {

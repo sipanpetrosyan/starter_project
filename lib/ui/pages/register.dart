@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:form_field_validator/form_field_validator.dart';
 import 'package:igroove_ui/db/database.dart';
+import 'package:igroove_ui/managment/app_manager.dart';
 import 'package:igroove_ui/managment/const_variables.dart';
-import 'package:igroove_ui/models/user_db.dart';
 import 'package:igroove_ui/ui/pages/validator.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:uuid/uuid.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -13,15 +11,10 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  String _firstName, _lastName, _email, _password;
-  final TextEditingController firstNameController =
-      TextEditingController(text: "DSf");
-  final TextEditingController lastNameController =
-      TextEditingController(text: "sdf");
-  final TextEditingController emailController =
-      TextEditingController(text: "dfsdfsd@df.df");
-  final TextEditingController passController =
-      TextEditingController(text: "dsfsdfsdfsdfsdf");
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passController = TextEditingController();
   bool isNameValid = true;
   bool isLastNameValid = true;
   bool isEmailValid = true;
@@ -116,7 +109,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 color: Color.fromARGB(255, 130, 130, 130)),
                           ),
                         ),
-                        onChanged: (input) => _firstName = input,
+                        onChanged: (input) {},
                       ),
                     ),
                     Theme(
@@ -144,7 +137,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 color: Color.fromARGB(255, 130, 130, 130)),
                           ),
                         ),
-                        onChanged: (input) => _lastName = input,
+                        onChanged: (input) {},
                       ),
                     ),
                     Theme(
@@ -169,7 +162,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 color: Color.fromARGB(255, 130, 130, 130)),
                           ),
                         ),
-                        onChanged: (input) => _email = input,
+                        onChanged: (input) {},
                       ),
                     ),
                     Theme(
@@ -198,7 +191,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 color: Color.fromARGB(255, 130, 130, 130)),
                           ),
                         ),
-                        onChanged: (input) => _password = input,
+                        onChanged: (input) {},
                         obscureText: true,
                       ),
                     ),
@@ -233,22 +226,51 @@ class _RegisterPageState extends State<RegisterPage> {
                             isPassValid) {
                           // DatabaseProvider.db.getUsers();
 
-                          String id = Uuid().v4();
+                          DatabaseProvider.db
+                              .getEmail(emailController.text)
+                              .then((user) {
+                            print('Error - ${user.response}');
+                            if (user.response == null) {
+                              String id = Uuid().v4();
 
-                          DatabaseProvider.db.insert({
-                            DatabaseProvider.FIRST_NAME:
-                                firstNameController.text,
-                            DatabaseProvider.COLUMN_ID: id,
-                            DatabaseProvider.LAST_NAME: lastNameController.text,
-                            DatabaseProvider.EMAIL: emailController.text,
-                            DatabaseProvider.PASSWORD: passController.text,
-                          }).then((value) {
-                            // DatabaseProvider.db.getUser(id).then((user) {
-                            //   print(user.firstName);
-                            // });
+                              // AppManager().getEmail(emailController.text, passController.text)
+
+                              DatabaseProvider.db.insert({
+                                DatabaseProvider.FIRST_NAME:
+                                    firstNameController.text,
+                                DatabaseProvider.COLUMN_ID: id,
+                                DatabaseProvider.LAST_NAME:
+                                    lastNameController.text,
+                                DatabaseProvider.EMAIL: emailController.text,
+                                DatabaseProvider.PASSWORD: passController.text,
+                              }).then((value) {
+                                // DatabaseProvider.db.getUser(id).then((user) {
+                                //   print(user.firstName);
+                                // });
+                              });
+
+                              Navigator.pop(context);
+                            }
                           });
 
-                          Navigator.pop(context);
+                          // String id = Uuid().v4();
+
+                          // // AppManager().getEmail(emailController.text, passController.text)
+
+                          // DatabaseProvider.db.insert({
+                          //   DatabaseProvider.FIRST_NAME:
+                          //       firstNameController.text,
+                          //   DatabaseProvider.COLUMN_ID: id,
+                          //   DatabaseProvider.LAST_NAME: lastNameController.text,
+                          //   DatabaseProvider.EMAIL: emailController.text,
+                          //   DatabaseProvider.PASSWORD: passController.text,
+                          // }).then((value) {
+                          //   // DatabaseProvider.db.getUser(id).then((user) {
+                          //   //   print(user.firstName);
+                          //   // });
+                          // });
+
+                          // Navigator.pop(context);
                         }
                       },
                       child: Text(

@@ -10,7 +10,6 @@ import 'package:igroove_ui/ui/pages/login.dart';
 import 'package:igroove_ui/ui/pages/register.dart';
 
 void main() {
-
   AppAPI();
 
   runApp(
@@ -21,7 +20,7 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    TestApiModel _userModel = TestApiModel();
+    // TestApiModel _userModel = TestApiModel();
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,

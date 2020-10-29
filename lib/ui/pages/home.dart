@@ -21,7 +21,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget bodyContent() {
+  bodyContent() {
     switch (selectedTab) {
       case 0:
         return MyTrends();

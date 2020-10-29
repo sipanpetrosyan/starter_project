@@ -1,13 +1,5 @@
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:igroove_ui/managment/app_manager.dart';
-import 'package:igroove_ui/managment/user.dart';
-import 'package:igroove_ui/models/test_api.dart';
-
-import '../../const.dart';
 
 class HttpPage extends StatefulWidget {
   @override
@@ -73,8 +65,9 @@ class _HttpPageState extends State<HttpPage> {
                             Text(
                                 '${_appManager.userMeneger.testList[index].id} '),
                             Expanded(
-                                child: Text(
-                                    '${_appManager.userMeneger.testList[index].title}')),
+                              child: Text(
+                                  '${_appManager.userMeneger.testList[index].title}'),
+                            ),
                           ],
                         ),
                       ),
@@ -82,6 +75,8 @@ class _HttpPageState extends State<HttpPage> {
                   );
                 },
               )
-            : Center(child: Text(errorText));
+            : Center(
+                child: Text(errorText),
+              );
   }
 }

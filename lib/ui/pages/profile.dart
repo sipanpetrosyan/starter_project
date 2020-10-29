@@ -22,10 +22,15 @@ class _ProfilePageState extends State<ProfilePage> {
       TextEditingController(text: AppManager().userMeneger.user.email);
   TextEditingController password = TextEditingController(text: "password");
   FocusNode focusNode = FocusNode();
-  File _image;
-  int _value = 1;
   static List<String> dropdownLengList = ['English', 'Russian', 'Armenian'];
   String selectLenguage = dropdownLengList[0];
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   setState(() {});
+  // }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -264,13 +269,18 @@ class _ProfilePageState extends State<ProfilePage> {
                         child: TextFormField(
                           controller: email,
                           onTap: () {
-                            print('Email');
+                            print(['Email', context]);
                             setState(() {
                               FocusScope.of(context)
                                   .requestFocus(new FocusNode());
                             });
 
-                            Navigator.of(context).pushNamed('changeEmail');
+                            Navigator.of(context)
+                                .pushNamed('changeEmail')
+                                .then((value) {
+                              email.text = AppManager().userMeneger.user.email;
+                              // setState(() {});
+                            });
                           },
                           style: TextStyle(
                             color: Colors.black,
@@ -411,26 +421,26 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _paddingPopup() => PopupMenuButton<int>(
-        itemBuilder: (context) => [
-          PopupMenuItem(
-            value: 1,
-            child: Text(
-              "English",
-              style: TextStyle(color: Colors.red, fontWeight: FontWeight.w700),
-            ),
-          ),
-          PopupMenuItem(
-            value: 2,
-            child: Text(
-              "Chinese",
-              style: TextStyle(color: Colors.red, fontWeight: FontWeight.w700),
-            ),
-          ),
-        ],
-        elevation: 4,
-        padding: EdgeInsets.symmetric(horizontal: 50),
-      );
+  // Widget _paddingPopup() => PopupMenuButton<int>(
+  //       itemBuilder: (context) => [
+  //         PopupMenuItem(
+  //           value: 1,
+  //           child: Text(
+  //             "English",
+  //             style: TextStyle(color: Colors.red, fontWeight: FontWeight.w700),
+  //           ),
+  //         ),
+  //         PopupMenuItem(
+  //           value: 2,
+  //           child: Text(
+  //             "Chinese",
+  //             style: TextStyle(color: Colors.red, fontWeight: FontWeight.w700),
+  //           ),
+  //         ),
+  //       ],
+  //       elevation: 4,
+  //       padding: EdgeInsets.symmetric(horizontal: 50),
+  //     );
 
   void _showPicker(context) {
     showModalBottomSheet(

@@ -2,8 +2,6 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
-
 import 'package:igroove_ui/managment/const_variables.dart';
 
 class AccountPage extends StatefulWidget {
@@ -26,10 +24,7 @@ class _AccountPageState extends State<AccountPage>
   Timer timer;
   @override
   void initState() {
-    // arr.add(random.nextDouble() * constVariables.screenWidth);
-
     Map<String, List> map1 = {'x': arr, 'y': arr2};
-    // print('arr $arr');
     print('arr $map1');
     super.initState();
     animationBuilder();
@@ -56,7 +51,6 @@ class _AccountPageState extends State<AccountPage>
 
   @override
   void dispose() {
-  
     _controller.dispose();
     timer.cancel();
     super.dispose();

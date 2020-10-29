@@ -2,13 +2,10 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
-import 'package:igroove_ui/db/database.dart';
 import 'package:igroove_ui/managment/app_manager.dart';
 import 'package:igroove_ui/managment/const_variables.dart';
 // import 'package:igroove_ui/managment/user_login_inf.dart';
-import 'package:igroove_ui/models/user_db.dart';
 import 'package:igroove_ui/ui/pages/validator.dart';
-import 'package:uuid/uuid.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -16,17 +13,25 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  String _email, _password;
-  TextEditingController emailController =
-      TextEditingController(text: "minas@gmail.com");
-  TextEditingController passController =
-      TextEditingController(text: "qwertyui");
+  String _password;
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passController = TextEditingController();
   bool isEmailValid = true;
   bool isPassValid = true;
   String errorEmailMesage;
   String errorPassMesage;
   String errorEmail;
   ConstVariables constVariables;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   emailController.text = '';
+  //   passController.text = '';
+  //   if (mounted) {
+  //     setState(() {});
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +44,19 @@ class _LoginPageState extends State<LoginPage> {
   didChangeDependencies() {
     super.didChangeDependencies();
     constVariables = ConstVariables();
+    // emailController.text = '';
+    // passController.text = '';
   }
+
+  // @override
+  // dispose() {
+  //   super.dispose();
+  //   emailController.text = '';
+  //   passController.text = '';
+  //   setState(() {
+
+  //   });
+  // }
 
   Widget bodyContent(BuildContext context) {
     return GestureDetector(
@@ -111,9 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                                 color: Color.fromARGB(255, 130, 130, 130)),
                           ),
                         ),
-                        onChanged: (input) {
-                          _email = input;
-                        },
+                        onChanged: (input) {},
                       ),
                     ),
                     Theme(
@@ -210,9 +225,9 @@ class _LoginPageState extends State<LoginPage> {
                           //     email: emailController.text,
                           //     password: passController.text);
 
-                         AppManager().userMeneger
-                              .login(
-                                  emailController.text, passController.text)
+                          AppManager()
+                              .userMeneger
+                              .login(emailController.text, passController.text)
                               .then((error) {
                             if (error == null) {
                               // AppManager().userMeneger.user = user;
@@ -222,6 +237,8 @@ class _LoginPageState extends State<LoginPage> {
                               passController.text = '';
                             }
                           });
+                          emailController.text = '';
+                          passController.text = '';
 
                           // AppManager().userMeneger.user;
                           // emailController = TextEditingController();

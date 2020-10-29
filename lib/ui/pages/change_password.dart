@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:igroove_ui/managment/app_manager.dart';
 import 'package:igroove_ui/managment/const_variables.dart';
 import 'package:igroove_ui/ui/pages/validator.dart';
 
@@ -9,9 +10,12 @@ class ChangePasswordPage extends StatefulWidget {
 
 class _ChangePasswordPageState extends State<ChangePasswordPage> {
   ConstVariables constVariables = ConstVariables();
-  String _password;
   final TextEditingController passController = TextEditingController();
+  final TextEditingController newPassController = TextEditingController();
+  final TextEditingController confirmPassController = TextEditingController();
   bool isPassValid = true;
+  bool isWrongPass = true;
+  bool isConfirmPass = true;
   String errorPassMesage;
   @override
   Widget build(BuildContext context) {
@@ -93,6 +97,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                         primaryColor: Color.fromARGB(255, 244, 129, 79),
                       ),
                       child: TextFormField(
+                        controller: passController,
                         keyboardType: TextInputType.text,
                         style: TextStyle(
                           color: Colors.black,
@@ -100,9 +105,12 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                           fontFamily: "Montserrat",
                         ),
                         decoration: InputDecoration(
-                          labelText: 'Password',
+                          labelText:
+                              isWrongPass ? 'Password' : 'Wrong password',
                           labelStyle: TextStyle(
-                              color: Color.fromARGB(255, 244, 129, 79)),
+                              color: isWrongPass
+                                  ? Color.fromARGB(255, 244, 129, 79)
+                                  : Colors.red),
                           enabledBorder: UnderlineInputBorder(
                             borderSide: BorderSide(
                                 color: Color.fromARGB(255, 200, 200, 200)),
@@ -117,7 +125,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                       primaryColor: Color.fromARGB(255, 244, 129, 79),
                     ),
                     child: TextFormField(
-                      controller: passController,
+                      controller: newPassController,
                       keyboardType: TextInputType.text,
                       style: TextStyle(
                         color: Colors.black,
@@ -136,7 +144,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                               color: Color.fromARGB(255, 200, 200, 200)),
                         ),
                       ),
-                      onChanged: (input) => _password = input,
+                      onChanged: (input) {},
                       obscureText: true,
                     ),
                   ),
@@ -145,6 +153,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                       primaryColor: Color.fromARGB(255, 244, 129, 79),
                     ),
                     child: TextFormField(
+                      controller: confirmPassController,
                       keyboardType: TextInputType.text,
                       style: TextStyle(
                         color: Colors.black,
@@ -152,9 +161,13 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                         fontFamily: "Montserrat",
                       ),
                       decoration: InputDecoration(
-                        labelText: 'Confirm Password',
-                        labelStyle:
-                            TextStyle(color: Color.fromARGB(255, 244, 129, 79)),
+                        labelText: isConfirmPass
+                            ? 'Confirm Password'
+                            : 'Wrong confirm password',
+                        labelStyle: TextStyle(
+                            color: isConfirmPass
+                                ? Color.fromARGB(255, 244, 129, 79)
+                                : Colors.red),
                         enabledBorder: UnderlineInputBorder(
                           borderSide: BorderSide(
                               color: Color.fromARGB(255, 200, 200, 200)),
@@ -189,14 +202,40 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               right: constVariables.screenWidth * 0.14,
               bottom: 12,
               child: GestureDetector(
-                onTap: () {
+                onTap: () async {
                   errorPassMesage =
-                      Validator.passwordValidator.call(passController.text);
+                      Validator.passwordValidator.call(newPassController.text);
                   isPassValid = errorPassMesage == null;
                   setState(() {});
-                  if (isPassValid) {
+                  if (isPassValid &&
+                      (newPassController.text == confirmPassController.text)) {
+                    String error = await AppManager()
+                        .userMeneger
+                        .changeDbUserPassword(
+                            newPassword: newPassController.text,
+                            password: passController.text);
+
+                    if (error != null) {
+                      print(error);
+                      passController.text = "";
+                      newPassController.text = "";
+                      confirmPassController.text = "";
+                      isWrongPass = false;
+                      setState(() {});
+                    } else {
+                      setState(() {});
+                      Navigator.pop(context);
+                    }
+
                     print('Save');
-                    Navigator.pop(context);
+                    // Navigator.pop(context);
+                  }
+                  if (newPassController.text != confirmPassController.text) {
+                    setState(() {
+                      newPassController.text = "";
+                      confirmPassController.text = "";
+                      isConfirmPass = false;
+                    });
                   }
                 },
                 child: Container(

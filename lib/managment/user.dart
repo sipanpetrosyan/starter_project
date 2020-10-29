@@ -1,4 +1,3 @@
-import 'package:http/http.dart' as http;
 import 'package:igroove_ui/api/igroove_api.dart';
 import 'package:igroove_ui/db/database.dart';
 import 'package:igroove_ui/models/test_api.dart';
@@ -9,8 +8,6 @@ class UserMeneger {
 
   User user;
 
-  // bool dataLoaded = false;
-
   Future<String> getUserAPI() async {
     var result = await AppAPI().userAPI.getUser();
     testList = result.response;
@@ -20,7 +17,10 @@ class UserMeneger {
   Future<String> login(String email, String password) async {
     var result = await DatabaseProvider.db.login(email, password);
 
-    user = result.response;
+    if (result.error == null) {
+      print("User is not null");
+      user = result.response;
+    }
 
     return result.error;
   }
@@ -29,7 +29,10 @@ class UserMeneger {
     var result =
         await DatabaseProvider.db.update(field: field, newWalue: newWalue);
 
-    user = result.response;
+    if (result.error == null) {
+      print("User is not null");
+      user = result.response;
+    }
 
     return result.error;
   }
@@ -39,6 +42,20 @@ class UserMeneger {
         .changeEmail(newEmail: newEmail, password: password);
 
     if (result.error == null) {
+      print("User is not null");
+      user = result.response;
+    }
+
+    return result.error;
+  }
+
+  Future<String> changeDbUserPassword(
+      {String newPassword, String password}) async {
+    var result = await DatabaseProvider.db
+        .changePassword(newPassword: newPassword, password: password);
+
+    if (result.error == null) {
+      print("User is not null");
       user = result.response;
     }
 

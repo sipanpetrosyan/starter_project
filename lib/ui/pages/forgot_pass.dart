@@ -8,7 +8,6 @@ class ForgotPassPage extends StatefulWidget {
 }
 
 class _ForgotPassPageState extends State<ForgotPassPage> {
-  String _email, _password;
   final TextEditingController emailController = TextEditingController();
   bool isEmailValid = true;
   String errorEmailMesage;
@@ -102,7 +101,7 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
                                 color: Color.fromARGB(255, 130, 130, 130)),
                           ),
                         ),
-                        onChanged: (input) => _email = input,
+                        onChanged: (input){},
                       ),
                     ),
                   ],

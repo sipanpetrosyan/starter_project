@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:igroove_ui/db/database.dart';
 import 'package:igroove_ui/managment/app_manager.dart';
 import 'package:igroove_ui/managment/const_variables.dart';
 import 'package:igroove_ui/ui/pages/validator.dart';
@@ -11,13 +10,13 @@ class ChangeEmailPage extends StatefulWidget {
 
 class _ChangeEmailPageState extends State<ChangeEmailPage> {
   ConstVariables constVariables = ConstVariables();
-  String _email;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passController = TextEditingController();
   bool isEmailValid = true;
   bool isPassValid = true;
   String errorEmailMesage;
   String errorPassMesage;
+  bool textFiledFocus;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -116,9 +115,7 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
                                 color: Color.fromARGB(255, 200, 200, 200)),
                           ),
                         ),
-                        onChanged: (input) {
-                          _email = input;
-                        },
+                        onChanged: (input) {},
                       ),
                     ),
                   ),
@@ -127,6 +124,7 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
                       primaryColor: Color.fromARGB(255, 244, 129, 79),
                     ),
                     child: TextFormField(
+                      autofocus: textFiledFocus ?? false,
                       controller: passController,
                       keyboardType: TextInputType.text,
                       style: TextStyle(
@@ -185,15 +183,21 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
                   if (isEmailValid && isPassValid) {
                     print(passController.text);
 
-                    String error =
-                        await AppManager().userMeneger.changeDbUserEmail(newEmail:emailController.text, password: passController.text);
+                    String error = await AppManager()
+                        .userMeneger
+                        .changeDbUserEmail(
+                            newEmail: emailController.text,
+                            password: passController.text);
 
                     if (error != null) {
                       print(error);
-
+                      passController.text = '';
+                      isPassValid = false;
+                      textFiledFocus = false;
                       errorPassMesage = error;
                       setState(() {});
                     } else {
+                      setState(() {});
                       Navigator.pop(context);
                     }
                   }
