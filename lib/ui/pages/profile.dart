@@ -25,12 +25,6 @@ class _ProfilePageState extends State<ProfilePage> {
   static List<String> dropdownLengList = ['English', 'Russian', 'Armenian'];
   String selectLenguage = dropdownLengList[0];
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   setState(() {});
-  // }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -279,7 +273,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                 .pushNamed('changeEmail')
                                 .then((value) {
                               email.text = AppManager().userMeneger.user.email;
-                              // setState(() {});
                             });
                           },
                           style: TextStyle(

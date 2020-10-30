@@ -203,40 +203,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               bottom: 12,
               child: GestureDetector(
                 onTap: () async {
-                  errorPassMesage =
-                      Validator.passwordValidator.call(newPassController.text);
-                  isPassValid = errorPassMesage == null;
-                  setState(() {});
-                  if (isPassValid &&
-                      (newPassController.text == confirmPassController.text)) {
-                    String error = await AppManager()
-                        .userMeneger
-                        .changeDbUserPassword(
-                            newPassword: newPassController.text,
-                            password: passController.text);
-
-                    if (error != null) {
-                      print(error);
-                      passController.text = "";
-                      newPassController.text = "";
-                      confirmPassController.text = "";
-                      isWrongPass = false;
-                      setState(() {});
-                    } else {
-                      setState(() {});
-                      Navigator.pop(context);
-                    }
-
-                    print('Save');
-                    // Navigator.pop(context);
-                  }
-                  if (newPassController.text != confirmPassController.text) {
-                    setState(() {
-                      newPassController.text = "";
-                      confirmPassController.text = "";
-                      isConfirmPass = false;
-                    });
-                  }
+                  savePassword();
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -258,5 +225,37 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
         )
       ],
     );
+  }
+
+  savePassword() async {
+    errorPassMesage = Validator.passwordValidator.call(newPassController.text);
+    isPassValid = errorPassMesage == null;
+    setState(() {});
+    if (isPassValid && (newPassController.text == confirmPassController.text)) {
+      //change password db
+      String error = await AppManager().userMeneger.changeDbUserPassword(
+          newPassword: newPassController.text, password: passController.text);
+
+      if (error != null) {
+        print(error);
+        passController.text = "";
+        newPassController.text = "";
+        confirmPassController.text = "";
+        isWrongPass = false;
+        setState(() {});
+      } else {
+        setState(() {});
+        Navigator.pop(context);
+      }
+
+      print('Save');
+    }
+    if (newPassController.text != confirmPassController.text) {
+      setState(() {
+        newPassController.text = "";
+        confirmPassController.text = "";
+        isConfirmPass = false;
+      });
+    }
   }
 }

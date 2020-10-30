@@ -14,6 +14,33 @@ class UserMeneger {
     return result.error;
   }
 
+  Future<String> signUp(
+      {String firstName,
+      String lastName,
+      String email,
+      String id,
+      String password}) async {
+    var result = await DatabaseProvider.db.insert({
+      DatabaseProvider.FIRST_NAME: firstName,
+      DatabaseProvider.COLUMN_ID: id,
+      DatabaseProvider.LAST_NAME: lastName,
+      DatabaseProvider.EMAIL: email,
+      DatabaseProvider.PASSWORD: password,
+    });
+
+    if (result == 0) {
+      return "Something went wrong";
+    }
+
+    return null;
+  }
+
+  Future<bool> checkDbUserExistingByEmail(String email) async {
+    var result = await DatabaseProvider.db.checkUserExistingByEmail(email);
+
+    return result.response;
+  }
+
   Future<String> login(String email, String password) async {
     var result = await DatabaseProvider.db.login(email, password);
 

@@ -27,6 +27,7 @@ class DatabaseProvider {
     return _database;
   }
 
+  //create new DB
   Future<Database> createDatabase() async {
     String dbPath = await getDatabasesPath();
     print('$dbPath/user.db');
@@ -49,13 +50,11 @@ class DatabaseProvider {
     );
   }
 
+  // all user full info
   Future<List<User>> getUsers() async {
     final db = await database;
     var users = await db.query(TABLE_USER,
         columns: [COLUMN_ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD]);
-    // ,
-    // whereArgs: ["sipan"],
-    // where: '$FIRST_NAME = ?'
 
     List<User> userList = List<User>();
     users.forEach((element) {
@@ -67,11 +66,12 @@ class DatabaseProvider {
     return userList;
   }
 
- Future<BasicResponse<User>> getEmail(String email) async {
+  //is there a user with such an email address
+  Future<BasicResponse<bool>> checkUserExistingByEmail(String email) async {
     final db = await database;
     var userMap;
-
     String error;
+    bool checkResult = false;
 
     try {
       userMap = await db.rawQuery('''
@@ -83,22 +83,16 @@ class DatabaseProvider {
       error = e.toString();
     }
 
-    User user;
     if (userMap != null && userMap.length != 0) {
-      user = User.fromMap(userMap.first);
+      checkResult = true;
     }
-
-    return BasicResponse(error: error, response: user);
+    return BasicResponse(error: error, response: checkResult);
   }
 
+  // signIn user
   Future<BasicResponse<User>> login(String email, String password) async {
     final db = await database;
     var userMap;
-    //  = await db.query(TABLE_USER,
-    //     columns: [COLUMN_ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD],
-    //     whereArgs: [email],
-    //     where: '$EMAIL = ?');
-
     String error;
 
     try {
@@ -121,10 +115,10 @@ class DatabaseProvider {
     return BasicResponse(error: error, response: user);
   }
 
+  // select user info by id
   Future<BasicResponse<User>> getUser(String uid) async {
     final db = await database;
     var userMap;
-
     String error;
 
     try {
@@ -145,32 +139,15 @@ class DatabaseProvider {
     return BasicResponse(error: error, response: user);
   }
 
+  // signUp user
   Future<int> insert(Map user) async {
     final db = await database;
     return await db.insert(TABLE_USER, user.cast<String, dynamic>());
   }
 
-  // Future<BasicResponse<User>> changePassword({String newPassword}) async {
-  //   final db = await database;
-
-  //   String userId = AppManager().userMeneger.user.id;
-
-  //   int result = await db.rawUpdate('''
-  //   UPDATE $TABLE_USER
-  //   SET $PASSWORD = '$newWalue'
-  //   WHERE $COLUMN_ID = '$userId'
-  //   ''');
-
-  //   if (result == 1) {
-  //     return await this.getUser(userId);
-  //   } else {
-  //     return BasicResponse(error: "Something went wrong", response: null);
-  //   }
-  // }
-
+  // update user info by id
   Future<BasicResponse<User>> update({String field, dynamic newWalue}) async {
     final db = await database;
-
     String userId = AppManager().userMeneger.user.id;
 
     int result = await db.rawUpdate('''
@@ -186,10 +163,10 @@ class DatabaseProvider {
     }
   }
 
+  // change email user, update info user by check password valid
   Future<BasicResponse<User>> changeEmail(
       {String newEmail, String password}) async {
     final db = await database;
-
     String userId = AppManager().userMeneger.user.id;
 
     int result = await db.rawUpdate('''
@@ -205,6 +182,7 @@ class DatabaseProvider {
     }
   }
 
+  //change password user, update info user by check password valid and oldPassword == newPassword
   Future<BasicResponse<User>> changePassword(
       {String newPassword, String password}) async {
     final db = await database;
@@ -223,22 +201,4 @@ class DatabaseProvider {
       return BasicResponse(error: "Password is wrong", response: null);
     }
   }
-
-  // Future<BasicResponse<User>> update({String field, dynamic newWalue}) async {
-  //   final db = await database;
-
-  //   String userId = AppManager().userMeneger.user.id;
-
-  //   int result = await db.rawUpdate('''
-  //   UPDATE $TABLE_USER
-  //   SET $field = '$newWalue'
-  //   WHERE $COLUMN_ID = '$userId'
-  //   ''');
-
-  //   if (result == 1) {
-  //     return await this.getUser(userId);
-  //   } else {
-  //     return BasicResponse(error: "Something went wrong", response: null);
-  //   }
-  // }
 }

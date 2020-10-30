@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:igroove_ui/managment/app_manager.dart';
 import 'package:igroove_ui/managment/const_variables.dart';
-// import 'package:igroove_ui/managment/user_login_inf.dart';
 import 'package:igroove_ui/ui/pages/validator.dart';
 
 class LoginPage extends StatefulWidget {
@@ -23,16 +22,6 @@ class _LoginPageState extends State<LoginPage> {
   String errorEmail;
   ConstVariables constVariables;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   emailController.text = '';
-  //   passController.text = '';
-  //   if (mounted) {
-  //     setState(() {});
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,19 +33,7 @@ class _LoginPageState extends State<LoginPage> {
   didChangeDependencies() {
     super.didChangeDependencies();
     constVariables = ConstVariables();
-    // emailController.text = '';
-    // passController.text = '';
   }
-
-  // @override
-  // dispose() {
-  //   super.dispose();
-  //   emailController.text = '';
-  //   passController.text = '';
-  //   setState(() {
-
-  //   });
-  // }
 
   Widget bodyContent(BuildContext context) {
     return GestureDetector(
@@ -192,60 +169,7 @@ class _LoginPageState extends State<LoginPage> {
                       color: Color.fromARGB(255, 232, 107, 44),
                       textColor: Colors.white,
                       onPressed: () {
-                        errorEmailMesage =
-                            Validator.emailValidator.call(emailController.text);
-                        errorPassMesage = Validator.passwordValidator
-                            .call(passController.text);
-                        isEmailValid = errorEmailMesage == null;
-                        isPassValid = errorPassMesage == null;
-
-                        print(emailController.text);
-
-                        if (isEmailValid && isPassValid) {
-                          // DatabaseProvider.db.getUsers().then((userList) {
-                          //   print(userList.length);
-                          //   print(emailController.text);
-
-                          //   User loggedUser = userList.firstWhere(
-                          //     (element) =>
-                          //         element.email == emailController.text,
-                          //     orElse: () => null,
-                          //   );
-
-                          //   if (loggedUser == null) {
-                          //     emailController.text = '';
-                          //   } else {
-                          //     Navigator.of(context).pushNamed('homePage');
-                          //   }
-                          // });
-
-                          // String id = Uuid().v4();
-                          // User user = User(
-                          //     id: id,
-                          //     email: emailController.text,
-                          //     password: passController.text);
-
-                          AppManager()
-                              .userMeneger
-                              .login(emailController.text, passController.text)
-                              .then((error) {
-                            if (error == null) {
-                              // AppManager().userMeneger.user = user;
-                              Navigator.of(context).pushNamed('homePage');
-                            } else {
-                              emailController.text = '';
-                              passController.text = '';
-                            }
-                          });
-                          emailController.text = '';
-                          passController.text = '';
-
-                          // AppManager().userMeneger.user;
-                          // emailController = TextEditingController();
-                          // passController = TextEditingController();
-                          // Navigator.of(context).pushNamed('homePage');
-                        }
-                        setState(() {});
+                        signIn();
                       },
                       child: Text(
                         "Login",
@@ -280,5 +204,34 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  signIn() {
+    errorEmailMesage = Validator.emailValidator.call(emailController.text);
+    errorPassMesage = Validator.passwordValidator.call(passController.text);
+    isEmailValid = errorEmailMesage == null;
+    isPassValid = errorPassMesage == null;
+
+    print(emailController.text);
+
+    if (isEmailValid && isPassValid) {
+      AppManager()
+          .userMeneger
+          .login(emailController.text, passController.text)
+          .then((error) {
+        if (error == null) {
+          Navigator.of(context).pushNamed('homePage');
+        } else {
+          emailController.text = '';
+          passController.text = '';
+          isEmailValid = false;
+          errorEmailMesage = 'no such email address';
+          setState(() {});
+        }
+      });
+      emailController.text = '';
+      passController.text = '';
+    }
+    setState(() {});
   }
 }

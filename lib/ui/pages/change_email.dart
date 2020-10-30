@@ -172,35 +172,8 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
               right: constVariables.screenWidth * 0.14,
               bottom: 12,
               child: GestureDetector(
-                onTap: () async {
-                  errorEmailMesage =
-                      Validator.emailValidator.call(emailController.text);
-                  isEmailValid = errorEmailMesage == null;
-                  errorPassMesage =
-                      Validator.passwordValidator.call(passController.text);
-                  isPassValid = errorPassMesage == null;
-                  setState(() {});
-                  if (isEmailValid && isPassValid) {
-                    print(passController.text);
-
-                    String error = await AppManager()
-                        .userMeneger
-                        .changeDbUserEmail(
-                            newEmail: emailController.text,
-                            password: passController.text);
-
-                    if (error != null) {
-                      print(error);
-                      passController.text = '';
-                      isPassValid = false;
-                      textFiledFocus = false;
-                      errorPassMesage = error;
-                      setState(() {});
-                    } else {
-                      setState(() {});
-                      Navigator.pop(context);
-                    }
-                  }
+                onTap: () {
+                  saveChangeEmail();
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -223,5 +196,42 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
         )
       ],
     );
+  }
+
+  saveChangeEmail() async {
+    errorEmailMesage = Validator.emailValidator.call(emailController.text);
+    isEmailValid = errorEmailMesage == null;
+    errorPassMesage = Validator.passwordValidator.call(passController.text);
+    isPassValid = errorPassMesage == null;
+    setState(() {});
+    if (isEmailValid && isPassValid) {
+      //check email already exists
+      bool checkResult = await AppManager()
+          .userMeneger
+          .checkDbUserExistingByEmail(emailController.text);
+
+      if (!checkResult) {
+        //change email user db
+        String error = await AppManager().userMeneger.changeDbUserEmail(
+            newEmail: emailController.text, password: passController.text);
+
+        if (error != null) {
+          print(error);
+          passController.text = '';
+          isPassValid = false;
+          textFiledFocus = false;
+          errorPassMesage = error;
+          setState(() {});
+        } else {
+          setState(() {});
+          Navigator.pop(context);
+        }
+      } else {
+        emailController.text = '';
+        passController.text = '';
+        isEmailValid = false;
+        errorEmailMesage = 'Email already exists';
+      }
+    }
   }
 }

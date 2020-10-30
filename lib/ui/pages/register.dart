@@ -207,71 +207,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       color: Color.fromARGB(255, 232, 107, 44),
                       textColor: Colors.white,
                       onPressed: () {
-                        errorNameMesage = Validator.nameValidator
-                            .call(firstNameController.text);
-                        errorLastNameMesage = Validator.lastNameValidator
-                            .call(lastNameController.text);
-                        errorEmailMesage =
-                            Validator.emailValidator.call(emailController.text);
-                        errorPassMesage = Validator.passwordValidator
-                            .call(passController.text);
-                        isNameValid = errorNameMesage == null;
-                        isLastNameValid = errorLastNameMesage == null;
-                        isEmailValid = errorEmailMesage == null;
-                        isPassValid = errorPassMesage == null;
-                        setState(() {});
-                        if (isNameValid &&
-                            isLastNameValid &&
-                            isEmailValid &&
-                            isPassValid) {
-                          // DatabaseProvider.db.getUsers();
-
-                          DatabaseProvider.db
-                              .getEmail(emailController.text)
-                              .then((user) {
-                            print('Error - ${user.response}');
-                            if (user.response == null) {
-                              String id = Uuid().v4();
-
-                              // AppManager().getEmail(emailController.text, passController.text)
-
-                              DatabaseProvider.db.insert({
-                                DatabaseProvider.FIRST_NAME:
-                                    firstNameController.text,
-                                DatabaseProvider.COLUMN_ID: id,
-                                DatabaseProvider.LAST_NAME:
-                                    lastNameController.text,
-                                DatabaseProvider.EMAIL: emailController.text,
-                                DatabaseProvider.PASSWORD: passController.text,
-                              }).then((value) {
-                                // DatabaseProvider.db.getUser(id).then((user) {
-                                //   print(user.firstName);
-                                // });
-                              });
-
-                              Navigator.pop(context);
-                            }
-                          });
-
-                          // String id = Uuid().v4();
-
-                          // // AppManager().getEmail(emailController.text, passController.text)
-
-                          // DatabaseProvider.db.insert({
-                          //   DatabaseProvider.FIRST_NAME:
-                          //       firstNameController.text,
-                          //   DatabaseProvider.COLUMN_ID: id,
-                          //   DatabaseProvider.LAST_NAME: lastNameController.text,
-                          //   DatabaseProvider.EMAIL: emailController.text,
-                          //   DatabaseProvider.PASSWORD: passController.text,
-                          // }).then((value) {
-                          //   // DatabaseProvider.db.getUser(id).then((user) {
-                          //   //   print(user.firstName);
-                          //   // });
-                          // });
-
-                          // Navigator.pop(context);
-                        }
+                        signUp();
                       },
                       child: Text(
                         "Registration",
@@ -305,5 +241,48 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
       ),
     );
+  }
+
+  signUp() async {
+    errorNameMesage = Validator.nameValidator.call(firstNameController.text);
+    errorLastNameMesage =
+        Validator.lastNameValidator.call(lastNameController.text);
+    errorEmailMesage = Validator.emailValidator.call(emailController.text);
+    errorPassMesage = Validator.passwordValidator.call(passController.text);
+    isNameValid = errorNameMesage == null;
+    isLastNameValid = errorLastNameMesage == null;
+    isEmailValid = errorEmailMesage == null;
+    isPassValid = errorPassMesage == null;
+    setState(() {});
+    if (isNameValid && isLastNameValid && isEmailValid && isPassValid) {
+      // check email for uniqueness
+      bool checkResult = await AppManager()
+          .userMeneger
+          .checkDbUserExistingByEmail(emailController.text);
+
+      if (!checkResult) {
+        // signUp insert db
+        String id = Uuid().v4();
+        String error = await AppManager().userMeneger.signUp(
+              firstName: firstNameController.text,
+              lastName: lastNameController.text,
+              email: emailController.text,
+              id: id,
+              password: passController.text,
+            );
+
+        if (error != null) {
+          print(error);
+        } else {
+          Navigator.pop(context);
+        }
+      } else {
+        emailController.text = '';
+        isEmailValid = false;
+        errorEmailMesage = "User already exists";
+        setState(() {});
+        print('User already exists.');
+      }
+    }
   }
 }
