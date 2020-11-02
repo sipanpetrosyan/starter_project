@@ -3,6 +3,7 @@ import 'package:igroove_ui/managment/const_variables.dart';
 import 'package:igroove_ui/ui/pages/http_example.dart';
 import 'package:igroove_ui/ui/pages/http_image.dart';
 import 'package:igroove_ui/ui/pages/post_request.dart';
+import 'package:igroove_ui/ui/pages/rocket.dart';
 
 class ProductsPage extends StatefulWidget {
   @override
@@ -26,7 +27,8 @@ class _ProductsPageState extends State<ProductsPage> {
         // FloatingActionButton
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            // Add your onPressed code here!
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => RocketPage()));
           },
           child: Icon(Icons.navigation),
           backgroundColor: Colors.green,

@@ -206,7 +206,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  signIn() {
+  signIn() async {
     errorEmailMesage = Validator.emailValidator.call(emailController.text);
     errorPassMesage = Validator.passwordValidator.call(passController.text);
     isEmailValid = errorEmailMesage == null;
@@ -215,22 +215,31 @@ class _LoginPageState extends State<LoginPage> {
     print(emailController.text);
 
     if (isEmailValid && isPassValid) {
+      bool checkEmail = await AppManager()
+          .userMeneger
+          .checkDbUserExistingByEmail(emailController.text);
+
       AppManager()
           .userMeneger
           .login(emailController.text, passController.text)
           .then((error) {
         if (error == null) {
           Navigator.of(context).pushNamed('homePage');
-        } else {
+          emailController.text = '';
+          passController.text = '';
+        } else if (!checkEmail) {
           emailController.text = '';
           passController.text = '';
           isEmailValid = false;
           errorEmailMesage = 'no such email address';
           setState(() {});
+        } else {
+          passController.text = '';
+          isPassValid = false;
+          errorPassMesage = 'wrong password';
+          setState(() {});
         }
       });
-      emailController.text = '';
-      passController.text = '';
     }
     setState(() {});
   }
