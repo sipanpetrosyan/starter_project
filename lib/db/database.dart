@@ -10,7 +10,7 @@ class DatabaseProvider {
   static const String LAST_NAME = "last_name";
   static const String EMAIL = "email";
   static const String PASSWORD = "password";
-  static const String IMAGE = "image_url";
+  static const String IMAGE = "image";
 
   DatabaseProvider._();
   static final DatabaseProvider db = DatabaseProvider._();
@@ -43,7 +43,7 @@ class DatabaseProvider {
           $LAST_NAME TEXT,
           $EMAIL TEXT,
           $PASSWORD TEXT,
-          $IMAGE TEXT
+          $IMAGE BLOB
           )''',
         );
       },

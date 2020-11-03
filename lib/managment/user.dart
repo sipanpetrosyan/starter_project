@@ -58,6 +58,8 @@ class UserMeneger {
 
     if (result.error == null) {
       print("User is not null");
+
+      var omage64 = result.response.profileImageUrl;
       user = result.response;
     }
 

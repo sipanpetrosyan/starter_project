@@ -40,6 +40,8 @@ dependencies:
 
   uuid: ^2.2.2
 
+  path_provider: ^1.6.22
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

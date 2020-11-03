@@ -21,9 +21,8 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
   ConstVariables constVariables = ConstVariables();
 
   StreamController<List<StarGame>> _starsDataUpdatStreamController =
-      StreamController<List<StarGame>>();
-  double coordinateX;
-  double coordinateY;
+      StreamController<List<StarGame>>.broadcast();
+  double heightAppBar = AppBar().preferredSize.height;
 
   double xCordinat;
   double yCordinat;
@@ -32,12 +31,20 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
   Timer starCreatingTimer;
   @override
   void initState() {
-    coordinateX = ((constVariables.screenWidth - 100) / 200);
-    coordinateY = ((constVariables.screenHeight - 200) / 200);
+    super.initState();
     createStarObjects();
     setStarAutoGeneration();
     setStarPositionUpdateTimer();
-    super.initState();
+    _starsDataUpdatStreamController.stream.listen((value) {
+      print('dx: ${value[1].dx}, dy: ${value[1].dy}');
+      for (int i = 0; i < value.length; i++) {
+        double startWidthCord = value[i].dx;
+        double startHeightCord = value[i].dy;
+
+        double endWidthCord = value[i].dx + 50;
+        double endHeightCord = value[i].dy + 50;
+      }
+    });
   }
 
   @override
@@ -57,11 +64,15 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final topPadding = MediaQuery.of(context).padding.top;
     // Offset a = Offset(1, 1);
     // Offset b = Offset(-1, -1);
     // Offset c = a - b;
     // print(c);
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Game Rocket'),
+      ),
       body: Container(
         color: Colors.blue,
         width: MediaQuery.of(context).size.width,
@@ -70,6 +81,9 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
             stream: _starsDataUpdatStreamController.stream,
             builder: (context, snapshot) {
               if (snapshot.data != null) {
+                // _starsDataUpdatStreamController.stream.listen((value) {
+                //   print('Value from controller: $value');
+                // });
                 // print(snapshot.data.length);
                 return Stack(
                   alignment: Alignment.center,
@@ -89,11 +103,13 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
                       child: GestureDetector(
                         onVerticalDragUpdate: (details) {
                           xCordinat = details.globalPosition.dx - 50;
-                          yCordinat = details.globalPosition.dy;
+                          yCordinat = details.globalPosition.dy -
+                              heightAppBar -
+                              topPadding;
                           // print('x: $xCordinat, y: $yCordinat');
                           // ));
-                          // setState(() {});
-                        },
+                          // setState(() {}); dee
+                        }, //
                         child: Image(
                           height: 100,
                           width: 100,
@@ -138,7 +154,7 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
   setStarPositionUpdateTimer() {
     starPositionUpdateTimer =
         Timer.periodic(Duration(milliseconds: 10), (timer) {
-      _starsDataUpdatStreamController.add(stars);
+      _starsDataUpdatStreamController.sink.add(stars);
     });
   }
 }

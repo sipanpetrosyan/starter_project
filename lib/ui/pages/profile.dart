@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:igroove_ui/db/database.dart';
 import 'package:igroove_ui/managment/app_manager.dart';
 import 'package:igroove_ui/managment/const_variables.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -106,13 +108,21 @@ class _ProfilePageState extends State<ProfilePage> {
                         child: AppManager().userMeneger.user.profileImageUrl !=
                                 null
                             ? ClipRRect(
-                                child: Image.file(
-                                  File(AppManager()
-                                      .userMeneger
-                                      .user
-                                      .profileImageUrl),
-                                  fit: BoxFit.fitHeight,
-                                ),
+                                child: FutureBuilder(
+                                    future: getImageFileFromBase64(AppManager()
+                                        .userMeneger
+                                        .user
+                                        .profileImageUrl),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.data == null) {
+                                        return Center(
+                                            child: CircularProgressIndicator());
+                                      }
+                                      return Image.memory(
+                                        File(snapshot.data).readAsBytesSync(),
+                                        fit: BoxFit.fitHeight,
+                                      );
+                                    }),
                               )
                             : Container(
                                 child: Padding(
@@ -414,6 +424,31 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  Future<String> getImageFileFromBase64(String base64) async {
+    final decodedBytes = base64Decode(base64);
+
+    Directory directory = await getApplicationDocumentsDirectory();
+
+    File image;
+
+    image = File(directory.path + "/profile_image.png");
+
+    image.writeAsBytesSync(decodedBytes);
+
+    return image.path;
+  }
+
+  Future saveImageFileFromBase64(String base64) async {
+    final decodedBytes = base64Decode(base64);
+
+    Directory directory = await getApplicationDocumentsDirectory();
+    if (File(directory.path + "/profile_image.png").existsSync()) {
+      File(directory.path + "/profile_image.png").deleteSync();
+    }
+
+    File(directory.path + "/profile_image.png").writeAsBytesSync(decodedBytes);
+  }
+
   // Widget _paddingPopup() => PopupMenuButton<int>(
   //       itemBuilder: (context) => [
   //         PopupMenuItem(
@@ -467,15 +502,21 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   _imgFromCamera() async {
-    PickedFile image = await ImagePicker()
-        .getImage(source: ImageSource.camera, imageQuality: 50);
+    PickedFile image = await ImagePicker().getImage(
+        source: ImageSource.camera,
+        imageQuality: 100,
+        maxHeight: 500,
+        maxWidth: 500);
+    
+    final bytes = File(image.path).readAsBytesSync();
+    String img64 = base64Encode(bytes);
 
     String error = await AppManager()
         .userMeneger
-        .updateDbUser(field: DatabaseProvider.IMAGE, newWalue: image.path);
+        .updateDbUser(field: DatabaseProvider.IMAGE, newWalue: img64);
 
-    if (error != null) {
-      print(error);
+    if (error == null) {
+      saveImageFileFromBase64(AppManager().userMeneger.user.profileImageUrl);
 
       ///Show error
     }
@@ -484,21 +525,25 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   _imgFromGallery() async {
-    PickedFile image = await ImagePicker()
-        .getImage(source: ImageSource.gallery, imageQuality: 50);
+    PickedFile image = await ImagePicker().getImage(
+        source: ImageSource.gallery,
+        imageQuality: 100,
+        maxHeight: 500,
+        maxWidth: 500);
+
+    final bytes = File(image.path).readAsBytesSync();
+    String img64 = base64Encode(bytes);
 
     String error = await AppManager()
         .userMeneger
-        .updateDbUser(field: DatabaseProvider.IMAGE, newWalue: image.path);
+        .updateDbUser(field: DatabaseProvider.IMAGE, newWalue: img64);
 
-    if (error != null) {
-      print(error);
+    if (error == null) {
+      saveImageFileFromBase64(AppManager().userMeneger.user.profileImageUrl);
 
       ///Show error
     }
 
     setState(() {});
-
-    print(AppManager().userMeneger.user.profileImageUrl);
   }
 }
