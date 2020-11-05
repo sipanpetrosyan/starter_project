@@ -27,6 +27,24 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
   double xCordinat;
   double yCordinat;
 
+  double starLeftTopDx;
+  double starLeftTopDy;
+  double starRightTopDx;
+  double starRightTopDy;
+  double starLeftBottomDx;
+  double starLeftBottomDy;
+  double starRightBottomDx;
+  double starRightBottomDy;
+
+  double rocketLeftTopDx = 100;
+  double rocketLeftTopDy = 100;
+  double rocketRightTopDx = 200;
+  double rocketRightTopDy = 100;
+  double rocketLeftBottomDx = 100;
+  double rocketLeftBottomDy = 200;
+  double rocketRightBottomDx = 200;
+  double rocketRightBottomDy = 200;
+
   Timer starPositionUpdateTimer;
   Timer starCreatingTimer;
   @override
@@ -36,14 +54,51 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
     setStarAutoGeneration();
     setStarPositionUpdateTimer();
     _starsDataUpdatStreamController.stream.listen((value) {
-      print('dx: ${value[1].dx}, dy: ${value[1].dy}');
-      for (int i = 0; i < value.length; i++) {
-        double startWidthCord = value[i].dx;
-        double startHeightCord = value[i].dy;
+      List<StarGame> closestStars = value.where((star) {
+        bool dxCheck = star.dx > rocketRightTopDx
+            ? star.dx - rocketRightTopDx < 20
+            : rocketLeftTopDx - star.dx - 40 < 20;
+        bool dyCheck =
+            star.dy > 0 ? rocketLeftTopDy - (star.dy + 40) < 20 : false;
+        // bool dxCheckBottom = star.dx > rocketRightBottomDx
+        //     ? star.dx - rocketLeftBottomDx < 20
+        //     : rocketLeftBottomDx - star.dx - 40 < 20;
+        // bool dyCheckBottom =
+        //     star.dy > 0 ? rocketLeftBottomDy - (star.dy + 40) < 20 : false;
 
-        double endWidthCord = value[i].dx + 50;
-        double endHeightCord = value[i].dy + 50;
-      }
+        return (dxCheck && dyCheck);
+        // || (dxCheckBottom && dyCheckBottom);
+      }).toList();
+
+      print(closestStars);
+
+      if (closestStars.isNotEmpty) {}
+
+      // for (int i = 0; i < closestStars.length; i++) {
+      //   starLeftTopDx = value[i].dx;
+      //   starLeftTopDy = value[i].dy;
+      //   starRightTopDx = value[i].dx + 40;
+      //   starRightTopDy = value[i].dy;
+      //   starLeftBottomDx = value[i].dx;
+      //   starLeftBottomDy = value[i].dy + 40;
+      //   starRightBottomDx = value[i].dx + 40;
+      //   starRightBottomDy = value[i].dy + 40;
+      //   // print(starRightBottomDx - starLeftBottomDx);
+      //   for (int j = 0; j < 40; j++) {
+      //     if ((starRightBottomDy - j == rocketRightTopDy + j) &&
+      //         starRightBottomDx - j == rocketRightTopDx - j) {
+      //       print('boom x: $xCordinat, y: $yCordinat');
+      //     }
+      //   }
+      //   if (mounted) {
+      //     setState(() {});
+      //   }
+      // }
+      // print('dx: ${value[1].dx}, dy: ${value[1].dy}');
+      // print('length: ${value.length}');
+      // if (mounted) {
+      //   setState(() {});
+      // }
     });
   }
 
@@ -102,10 +157,8 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
                       top: yCordinat,
                       child: GestureDetector(
                         onVerticalDragUpdate: (details) {
-                          xCordinat = details.globalPosition.dx - 50;
-                          yCordinat = details.globalPosition.dy -
-                              heightAppBar -
-                              topPadding;
+                          rocketSpeed(details, topPadding);
+
                           // print('x: $xCordinat, y: $yCordinat');
                           // ));
                           // setState(() {}); dee
@@ -113,6 +166,7 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
                         child: Image(
                           height: 100,
                           width: 100,
+                          // color: Colors.red,
                           image: AssetImage('assets/images/rocket.png'),
                         ),
                       ),
@@ -146,15 +200,36 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
   }
 
   setStarAutoGeneration() {
-    starCreatingTimer = Timer.periodic(Duration(milliseconds: 1700), (timer) {
+    starCreatingTimer = Timer.periodic(Duration(milliseconds: 15700), (timer) {
       createStarObjects();
     });
   }
 
   setStarPositionUpdateTimer() {
     starPositionUpdateTimer =
-        Timer.periodic(Duration(milliseconds: 10), (timer) {
+        Timer.periodic(Duration(milliseconds: 300), (timer) {
       _starsDataUpdatStreamController.sink.add(stars);
     });
+  }
+
+  rocketSpeed(details, topPadding) {
+    xCordinat = details.globalPosition.dx - 50;
+    yCordinat = details.globalPosition.dy - heightAppBar - topPadding;
+    rocketLeftTopDx = xCordinat;
+    rocketLeftTopDy = yCordinat;
+    rocketRightTopDx = xCordinat + 100;
+    rocketRightTopDy = yCordinat;
+    rocketLeftBottomDx = xCordinat;
+    rocketLeftBottomDy = yCordinat + 100;
+    rocketRightBottomDx = xCordinat + 100;
+    rocketLeftBottomDy = yCordinat + 100;
+
+    // if (yCordinat.toInt() >= starRightBottomDx.toInt()) {
+    //   print(5);
+    // } else {
+    //   print(5555555555555);
+    // }
+    // print('star: $starLeftTopDx');
+    // print('xCordinat: $xCordinat, rocketLeftTopDx: $rocketLeftTopDx');
   }
 }

@@ -20,7 +20,7 @@ class StarGame {
 
   bool get isVisible =>
       DateTime.now().difference(this._createdDate).inSeconds <
-      _constVariables.screenHeight / 100;
+      _constVariables.screenHeight* 0.3;
 
   bool hasOverlapping(Offset offset) {
     RenderBox renderBox =
@@ -42,7 +42,7 @@ class StarGame {
   }
 
   updatePosition() {
-    Timer.periodic(Duration(milliseconds: 10), (timer) {
+    Timer.periodic(Duration(milliseconds: 300), (timer) {
       this.dy += 1;
     });
   }
