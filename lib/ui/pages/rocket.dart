@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:igroove_ui/managment/const_variables.dart';
 import 'package:igroove_ui/models/star_game_model.dart';
@@ -44,6 +45,7 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
   double rocketLeftBottomDy = 200;
   double rocketRightBottomDx = 200;
   double rocketRightBottomDy = 200;
+  bool showDialoga = false;
 
   Timer starPositionUpdateTimer;
   Timer starCreatingTimer;
@@ -60,19 +62,64 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
             : rocketLeftTopDx - star.dx - 40 < 20;
         bool dyCheck =
             star.dy > 0 ? rocketLeftTopDy - (star.dy + 40) < 20 : false;
-        // bool dxCheckBottom = star.dx > rocketRightBottomDx
-        //     ? star.dx - rocketLeftBottomDx < 20
-        //     : rocketLeftBottomDx - star.dx - 40 < 20;
-        // bool dyCheckBottom =
-        //     star.dy > 0 ? rocketLeftBottomDy - (star.dy + 40) < 20 : false;
+        bool dyCheckBottom =
+            star.dy > 0 ? star.dy - rocketLeftBottomDy < 20 : false;
 
-        return (dxCheck && dyCheck);
+        return (dxCheck && dyCheck && dyCheckBottom);
         // || (dxCheckBottom && dyCheckBottom);
       }).toList();
 
-      print(closestStars);
+      // print(closestStars);
 
-      if (closestStars.isNotEmpty) {}
+      if (closestStars.isNotEmpty) {
+        List<StarGame> closest = closestStars.where((closest) {
+          // closestStars.
+          bool dxGameOver = closest.dx > rocketRightTopDx
+              ? closest.dx - rocketRightTopDx < 0
+              : rocketLeftTopDx - closest.dx < 0;
+          bool dyGameOver =
+              closest.dy > 0 ? rocketLeftTopDy - (closest.dy + 40) < 0 : false;
+          return dxGameOver && dyGameOver;
+        }).toList();
+        if (closest.isNotEmpty) {
+          print('boom');
+          starPositionUpdateTimer.cancel();
+          starCreatingTimer.cancel();
+          _starsDataUpdatStreamController.close();
+          // showDialog(context);
+          showDialoga = true;
+          if (showDialoga) {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) => CupertinoAlertDialog(
+                      title: new Text(
+                        "Game Over",
+                        style: TextStyle(color: Colors.red, fontSize: 24),
+                      ),
+                      content: new Text("Want to play again?",
+                          style: TextStyle(color: Colors.blue)),
+                      actions: <Widget>[
+                        CupertinoDialogAction(
+                          textStyle: TextStyle(fontWeight: FontWeight.normal),
+                          // isDefaultAction: true,
+                          child: Text('Yes'),
+                          onPressed: () {},
+                        ),
+                        CupertinoDialogAction(
+                          child: Text("No"),
+                          textStyle: TextStyle(fontWeight: FontWeight.normal),
+                          onPressed: () {
+                            Navigator.of(context).pushNamed('products');
+                          },
+                        )
+                      ],
+                    ));
+          }
+          if (mounted) {
+            setState(() {});
+          }
+        }
+      }
 
       // for (int i = 0; i < closestStars.length; i++) {
       //   starLeftTopDx = value[i].dx;
@@ -163,11 +210,27 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
                           // ));
                           // setState(() {}); dee
                         }, //
-                        child: Image(
-                          height: 100,
-                          width: 100,
-                          // color: Colors.red,
-                          image: AssetImage('assets/images/rocket.png'),
+                        child: Stack(
+                          children: [
+                            Container(
+                              color: Colors.transparent,
+                              height: 100,
+                              width: 60,
+                            ),
+                            Positioned(
+                              left: 0,
+                              top: 0,
+                              child: Container(
+                                width: 60,
+                                height: 100,
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        fit: BoxFit.cover,
+                                        image: AssetImage(
+                                            'assets/images/rocket.png'))),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -213,16 +276,16 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
   }
 
   rocketSpeed(details, topPadding) {
-    xCordinat = details.globalPosition.dx - 50;
+    xCordinat = details.globalPosition.dx - 30;
     yCordinat = details.globalPosition.dy - heightAppBar - topPadding;
-    rocketLeftTopDx = xCordinat;
+    rocketLeftTopDx = xCordinat - 30;
     rocketLeftTopDy = yCordinat;
-    rocketRightTopDx = xCordinat + 100;
+    rocketRightTopDx = xCordinat + 30;
     rocketRightTopDy = yCordinat;
-    rocketLeftBottomDx = xCordinat;
-    rocketLeftBottomDy = yCordinat + 100;
-    rocketRightBottomDx = xCordinat + 100;
-    rocketLeftBottomDy = yCordinat + 100;
+    rocketLeftBottomDx = xCordinat - 30;
+    rocketLeftBottomDy = yCordinat + 60;
+    rocketRightBottomDx = xCordinat + 30;
+    rocketLeftBottomDy = yCordinat + 60;
 
     // if (yCordinat.toInt() >= starRightBottomDx.toInt()) {
     //   print(5);
@@ -232,4 +295,38 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
     // print('star: $starLeftTopDx');
     // print('xCordinat: $xCordinat, rocketLeftTopDx: $rocketLeftTopDx');
   }
+  // showDialog() {
+  //   context: context,
+  //     barrierDismissible: true,
+  //     barrierLabel: MaterialLocalizations.of(context)
+  //         .modalBarrierDismissLabel,
+  //     barrierColor: Colors.black45,
+  //     transitionDuration: const Duration(milliseconds: 200),
+  //     pageBuilder: (BuildContext buildContext,
+  //         Animation animation,
+  //         Animation secondaryAnimation) {
+  //       return Center(
+  //         child: Container(
+  //           width: MediaQuery.of(context).size.width - 10,
+  //           height: MediaQuery.of(context).size.height -  80,
+  //           padding: EdgeInsets.all(20),
+  //           color: Colors.white,
+  //           child: Column(
+  //             children: [
+  //               RaisedButton(
+  //                 onPressed: () {
+  //                   Navigator.of(context).pop();
+  //                 },
+  //                 child: Text(
+  //                   "Save",
+  //                   style: TextStyle(color: Colors.white),
+  //                 ),
+  //                 color: const Color(0xFF1BC0C5),
+  //               )
+  //             ],
+  //           ),
+  //         ),
+  //       );
+  //     }
+  // }
 }
