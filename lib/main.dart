@@ -8,6 +8,7 @@ import 'package:igroove_ui/ui/pages/home.dart';
 import 'package:igroove_ui/ui/pages/login.dart';
 import 'package:igroove_ui/ui/pages/products.dart';
 import 'package:igroove_ui/ui/pages/register.dart';
+import 'package:igroove_ui/ui/pages/rocket.dart';
 
 void main() {
   AppAPI();
@@ -32,7 +33,8 @@ class MyApp extends StatelessWidget {
         'homePage': (context) => HomePage(),
         'changeEmail': (context) => ChangeEmailPage(),
         'changePassword': (context) => ChangePasswordPage(),
-        'products': (context) => ProductsPage()
+        'products': (context) => ProductsPage(),
+        'rocket': (context) => RocketPage()
       },
     );
   }

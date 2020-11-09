@@ -14,8 +14,6 @@ class RocketPage extends StatefulWidget {
 class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
   GlobalKey<_RocketPageState> stateWidgetKey = GlobalKey<_RocketPageState>();
   var random = new Random();
-  List<double> arr = [];
-  List<double> arr2 = [];
 
   List<StarGame> stars = [];
 
@@ -25,8 +23,8 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
       StreamController<List<StarGame>>.broadcast();
   double heightAppBar = AppBar().preferredSize.height;
 
-  double xCordinat;
-  double yCordinat;
+  double xCordinat = ConstVariables().screenWidth / 2 - 20;
+  double yCordinat = 300;
 
   double starLeftTopDx;
   double starLeftTopDy;
@@ -37,14 +35,14 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
   double starRightBottomDx;
   double starRightBottomDy;
 
-  double rocketLeftTopDx = 100;
-  double rocketLeftTopDy = 100;
-  double rocketRightTopDx = 200;
-  double rocketRightTopDy = 100;
-  double rocketLeftBottomDx = 100;
-  double rocketLeftBottomDy = 200;
-  double rocketRightBottomDx = 200;
-  double rocketRightBottomDy = 200;
+  double rocketLeftTopDx = ConstVariables().screenWidth / 2 - 50;
+  double rocketLeftTopDy = 300;
+  double rocketRightTopDx = ConstVariables().screenWidth / 2 + 10;
+  double rocketRightTopDy = 300;
+  double rocketLeftBottomDx = ConstVariables().screenWidth / 2 - 50;
+  double rocketLeftBottomDy = 360;
+  double rocketRightBottomDx = ConstVariables().screenWidth / 2 + 10;
+  double rocketRightBottomDy = 360;
   bool showDialoga = false;
 
   Timer starPositionUpdateTimer;
@@ -66,10 +64,7 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
             star.dy > 0 ? star.dy - rocketLeftBottomDy < 20 : false;
 
         return (dxCheck && dyCheck && dyCheckBottom);
-        // || (dxCheckBottom && dyCheckBottom);
       }).toList();
-
-      // print(closestStars);
 
       if (closestStars.isNotEmpty) {
         List<StarGame> closest = closestStars.where((closest) {
@@ -86,7 +81,6 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
           starPositionUpdateTimer.cancel();
           starCreatingTimer.cancel();
           _starsDataUpdatStreamController.close();
-          // showDialog(context);
           showDialoga = true;
           if (showDialoga) {
             showDialog(
@@ -101,15 +95,16 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
                       actions: <Widget>[
                         CupertinoDialogAction(
                           textStyle: TextStyle(fontWeight: FontWeight.normal),
-                          // isDefaultAction: true,
                           child: Text('Yes'),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.of(context).pushNamed('rocket');
+                          },
                         ),
                         CupertinoDialogAction(
                           child: Text("No"),
                           textStyle: TextStyle(fontWeight: FontWeight.normal),
                           onPressed: () {
-                            Navigator.of(context).pushNamed('products');
+                            Navigator.of(context).pushNamed('homePage');
                           },
                         )
                       ],
@@ -120,41 +115,14 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
           }
         }
       }
-
-      // for (int i = 0; i < closestStars.length; i++) {
-      //   starLeftTopDx = value[i].dx;
-      //   starLeftTopDy = value[i].dy;
-      //   starRightTopDx = value[i].dx + 40;
-      //   starRightTopDy = value[i].dy;
-      //   starLeftBottomDx = value[i].dx;
-      //   starLeftBottomDy = value[i].dy + 40;
-      //   starRightBottomDx = value[i].dx + 40;
-      //   starRightBottomDy = value[i].dy + 40;
-      //   // print(starRightBottomDx - starLeftBottomDx);
-      //   for (int j = 0; j < 40; j++) {
-      //     if ((starRightBottomDy - j == rocketRightTopDy + j) &&
-      //         starRightBottomDx - j == rocketRightTopDx - j) {
-      //       print('boom x: $xCordinat, y: $yCordinat');
-      //     }
-      //   }
-      //   if (mounted) {
-      //     setState(() {});
-      //   }
-      // }
-      // print('dx: ${value[1].dx}, dy: ${value[1].dy}');
-      // print('length: ${value.length}');
-      // if (mounted) {
-      //   setState(() {});
-      // }
     });
   }
 
-  @override
-  void didChangeDependencies() {
-    // print(MediaQuery.of(context).padding.bottom);
+  // @override
+  // void didChangeDependencies() {
 
-    super.didChangeDependencies();
-  }
+  //   super.didChangeDependencies();
+  // }
 
   @override
   void dispose() {
@@ -167,10 +135,6 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final topPadding = MediaQuery.of(context).padding.top;
-    // Offset a = Offset(1, 1);
-    // Offset b = Offset(-1, -1);
-    // Offset c = a - b;
-    // print(c);
     return Scaffold(
       appBar: AppBar(
         title: Text('Game Rocket'),
@@ -183,10 +147,6 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
             stream: _starsDataUpdatStreamController.stream,
             builder: (context, snapshot) {
               if (snapshot.data != null) {
-                // _starsDataUpdatStreamController.stream.listen((value) {
-                //   print('Value from controller: $value');
-                // });
-                // print(snapshot.data.length);
                 return Stack(
                   alignment: Alignment.center,
                   children: [
@@ -205,11 +165,7 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
                       child: GestureDetector(
                         onVerticalDragUpdate: (details) {
                           rocketSpeed(details, topPadding);
-
-                          // print('x: $xCordinat, y: $yCordinat');
-                          // ));
-                          // setState(() {}); dee
-                        }, //
+                        },
                         child: Stack(
                           children: [
                             Container(
@@ -263,14 +219,14 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
   }
 
   setStarAutoGeneration() {
-    starCreatingTimer = Timer.periodic(Duration(milliseconds: 15700), (timer) {
+    starCreatingTimer = Timer.periodic(Duration(milliseconds: 2616), (timer) {
       createStarObjects();
     });
   }
 
   setStarPositionUpdateTimer() {
     starPositionUpdateTimer =
-        Timer.periodic(Duration(milliseconds: 300), (timer) {
+        Timer.periodic(Duration(milliseconds: 12), (timer) {
       _starsDataUpdatStreamController.sink.add(stars);
     });
   }
@@ -286,47 +242,5 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
     rocketLeftBottomDy = yCordinat + 60;
     rocketRightBottomDx = xCordinat + 30;
     rocketLeftBottomDy = yCordinat + 60;
-
-    // if (yCordinat.toInt() >= starRightBottomDx.toInt()) {
-    //   print(5);
-    // } else {
-    //   print(5555555555555);
-    // }
-    // print('star: $starLeftTopDx');
-    // print('xCordinat: $xCordinat, rocketLeftTopDx: $rocketLeftTopDx');
   }
-  // showDialog() {
-  //   context: context,
-  //     barrierDismissible: true,
-  //     barrierLabel: MaterialLocalizations.of(context)
-  //         .modalBarrierDismissLabel,
-  //     barrierColor: Colors.black45,
-  //     transitionDuration: const Duration(milliseconds: 200),
-  //     pageBuilder: (BuildContext buildContext,
-  //         Animation animation,
-  //         Animation secondaryAnimation) {
-  //       return Center(
-  //         child: Container(
-  //           width: MediaQuery.of(context).size.width - 10,
-  //           height: MediaQuery.of(context).size.height -  80,
-  //           padding: EdgeInsets.all(20),
-  //           color: Colors.white,
-  //           child: Column(
-  //             children: [
-  //               RaisedButton(
-  //                 onPressed: () {
-  //                   Navigator.of(context).pop();
-  //                 },
-  //                 child: Text(
-  //                   "Save",
-  //                   style: TextStyle(color: Colors.white),
-  //                 ),
-  //                 color: const Color(0xFF1BC0C5),
-  //               )
-  //             ],
-  //           ),
-  //         ),
-  //       );
-  //     }
-  // }
 }

@@ -13,8 +13,10 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   String _password;
-  TextEditingController emailController = TextEditingController(text: 'minas@gmail.com');
-  TextEditingController passController = TextEditingController(text: '987654321');
+  TextEditingController emailController =
+      TextEditingController(text: 'minas@gmail.com');
+  TextEditingController passController =
+      TextEditingController(text: '987654321');
   bool isEmailValid = true;
   bool isPassValid = true;
   String errorEmailMesage;
@@ -158,7 +160,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 Spacer(
-                    // flex: 2,
+                    //flex: 2,
                     ),
                 Padding(
                   padding: EdgeInsets.only(bottom: 20),
@@ -183,7 +185,7 @@ class _LoginPageState extends State<LoginPage> {
                 Padding(
                   padding: EdgeInsets.only(
                       bottom: constVariables.screenWidth > 320
-                          ? constVariables.screenHeight * 0.15
+                          ? constVariables.screenHeight * 0.07
                           : 0),
                   child: GestureDetector(
                     child: Text(
