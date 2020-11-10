@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:igroove_ui/constant/variables.dart';
 import 'package:igroove_ui/managment/const_variables.dart';
 import 'package:igroove_ui/models/star_game_model.dart';
 
@@ -53,6 +54,7 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
     createStarObjects();
     setStarAutoGeneration();
     setStarPositionUpdateTimer();
+
     _starsDataUpdatStreamController.stream.listen((value) {
       List<StarGame> closestStars = value.where((star) {
         bool dxCheck = star.dx > rocketRightTopDx
@@ -84,31 +86,34 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
           showDialoga = true;
           if (showDialoga) {
             showDialog(
-                context: context,
-                builder: (BuildContext context) => CupertinoAlertDialog(
-                      title: new Text(
-                        "Game Over",
-                        style: TextStyle(color: Colors.red, fontSize: 24),
-                      ),
-                      content: new Text("Want to play again?",
-                          style: TextStyle(color: Colors.blue)),
-                      actions: <Widget>[
-                        CupertinoDialogAction(
-                          textStyle: TextStyle(fontWeight: FontWeight.normal),
-                          child: Text('Yes'),
-                          onPressed: () {
-                            Navigator.of(context).pushNamed('rocket');
-                          },
-                        ),
-                        CupertinoDialogAction(
-                          child: Text("No"),
-                          textStyle: TextStyle(fontWeight: FontWeight.normal),
-                          onPressed: () {
-                            Navigator.of(context).pushNamed('homePage');
-                          },
-                        )
-                      ],
-                    ));
+              context: context,
+              builder: (BuildContext context) => CupertinoAlertDialog(
+                title: new Text(
+                  "Game Over",
+                  style: TextStyle(color: Colors.red, fontSize: 24),
+                ),
+                content: new Text("Want to play again?",
+                    style: TextStyle(color: Colors.blue)),
+                actions: <Widget>[
+                  CupertinoDialogAction(
+                    textStyle: TextStyle(fontWeight: FontWeight.normal),
+                    child: Text('Yes'),
+                    onPressed: () {
+                      Navigator.of(context).pushNamed('rocket');
+                    },
+                  ),
+                  CupertinoDialogAction(
+                    child: Text("No"),
+                    textStyle: TextStyle(fontWeight: FontWeight.normal),
+                    onPressed: () {
+                      selectedTab = 2;
+                      Navigator.of(context).pushNamed('homePage');
+                      setState(() {});
+                    },
+                  )
+                ],
+              ),
+            );
           }
           if (mounted) {
             setState(() {});
@@ -144,58 +149,59 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: StreamBuilder<List<StarGame>>(
-            stream: _starsDataUpdatStreamController.stream,
-            builder: (context, snapshot) {
-              if (snapshot.data != null) {
-                return Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    ...List.generate(snapshot.data.length, (index) {
-                      return AnimatedPositioned(
-                        duration: Duration(milliseconds: 10),
-                        top: snapshot.data[index].dy,
-                        left: snapshot.data[index].dx,
-                        child: snapshot.data[index].star,
-                      );
-                    }),
-                    AnimatedPositioned(
+          stream: _starsDataUpdatStreamController.stream,
+          builder: (context, snapshot) {
+            if (snapshot.data != null) {
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  ...List.generate(snapshot.data.length, (index) {
+                    return AnimatedPositioned(
                       duration: Duration(milliseconds: 10),
-                      left: xCordinat,
-                      top: yCordinat,
-                      child: GestureDetector(
-                        onVerticalDragUpdate: (details) {
-                          rocketSpeed(details, topPadding);
-                        },
-                        child: Stack(
-                          children: [
-                            Container(
-                              color: Colors.transparent,
-                              height: 100,
+                      top: snapshot.data[index].dy,
+                      left: snapshot.data[index].dx,
+                      child: snapshot.data[index].star,
+                    );
+                  }),
+                  AnimatedPositioned(
+                    duration: Duration(milliseconds: 10),
+                    left: xCordinat,
+                    top: yCordinat,
+                    child: GestureDetector(
+                      onVerticalDragUpdate: (details) {
+                        rocketSpeed(details, topPadding);
+                      },
+                      child: Stack(
+                        children: [
+                          Container(
+                            color: Colors.transparent,
+                            height: 100,
+                            width: 60,
+                          ),
+                          Positioned(
+                            left: 0,
+                            top: 0,
+                            child: Container(
                               width: 60,
+                              height: 100,
+                              decoration: BoxDecoration(
+                                  // color: Colors.red,
+                                  image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: AssetImage(
+                                          'assets/images/rocket.png'))),
                             ),
-                            Positioned(
-                              left: 0,
-                              top: 0,
-                              child: Container(
-                                width: 60,
-                                height: 100,
-                                decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        fit: BoxFit.cover,
-                                        image: AssetImage(
-                                            'assets/images/rocket.png'))),
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                );
-              }
-
-              return SizedBox();
-            }),
+                  ),
+                ],
+              );
+            }
+            return SizedBox();
+          },
+        ),
       ),
     );
   }
@@ -205,10 +211,13 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
       return StarGame(
         dx: random.nextDouble() * (constVariables.screenWidth - 40),
         dy: -40,
-        star: Icon(
-          Icons.star,
-          size: 40,
-          color: Colors.yellow,
+        star: Container(
+          // color: Colors.red,
+          child: Icon(
+            Icons.star,
+            size: 40,
+            color: Colors.yellow,
+          ),
         ),
       );
     });
@@ -216,6 +225,7 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
     stars.removeWhere((star) => !star.isVisible);
 
     stars.addAll(starsRow);
+    print(stars.length);
   }
 
   setStarAutoGeneration() {
@@ -236,7 +246,7 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
     yCordinat = details.globalPosition.dy - heightAppBar - topPadding;
     rocketLeftTopDx = xCordinat - 30;
     rocketLeftTopDy = yCordinat;
-    rocketRightTopDx = xCordinat + 30;
+    rocketRightTopDx = xCordinat + 60;
     rocketRightTopDy = yCordinat;
     rocketLeftBottomDx = xCordinat - 30;
     rocketLeftBottomDy = yCordinat + 60;

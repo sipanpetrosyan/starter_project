@@ -19,8 +19,8 @@ class StarGame {
   }
 
   bool get isVisible =>
-      DateTime.now().difference(this._createdDate).inSeconds <
-      _constVariables.screenHeight * 0.3;
+      DateTime.now().difference(this._createdDate).inMilliseconds <
+      (_constVariables.screenHeight * 12);
 
   bool hasOverlapping(Offset offset) {
     RenderBox renderBox =

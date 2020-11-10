@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:igroove_ui/constant/variables.dart';
 import 'package:igroove_ui/ui/pages/account.dart';
 import 'package:igroove_ui/ui/pages/my_trends.dart';
 import 'package:igroove_ui/ui/pages/products.dart';
@@ -10,7 +11,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int selectedTab = 0;
+  
   @override
   Widget build(BuildContext context) {
     return Material(
