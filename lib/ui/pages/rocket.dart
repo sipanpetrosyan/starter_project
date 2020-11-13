@@ -48,12 +48,18 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
 
   Timer starPositionUpdateTimer;
   Timer starCreatingTimer;
+  Timer gameSecondTimer;
+  int secondsGame = 0;
   @override
   void initState() {
     super.initState();
     createStarObjects();
     setStarAutoGeneration();
     setStarPositionUpdateTimer();
+    gameSecondTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      secondsGame += 1;
+      print(secondsGame);
+    });
 
     _starsDataUpdatStreamController.stream.listen((value) {
       List<StarGame> closestStars = value.where((star) {
@@ -80,6 +86,8 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
         }).toList();
         if (closest.isNotEmpty) {
           print('boom');
+          gameSecondTimer.cancel();
+          print("fin $secondsGame");
           starPositionUpdateTimer.cancel();
           starCreatingTimer.cancel();
           _starsDataUpdatStreamController.close();
@@ -92,8 +100,14 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
                   "Game Over",
                   style: TextStyle(color: Colors.red, fontSize: 24),
                 ),
-                content: new Text("Want to play again?",
-                    style: TextStyle(color: Colors.blue)),
+                content: Column(
+                  children: [
+                    Text("record $secondsGame second\n",
+                        style: TextStyle(color: Colors.green, fontSize: 20)),
+                    Text("Want to play again?",
+                        style: TextStyle(color: Colors.blue)),
+                  ],
+                ),
                 actions: <Widget>[
                   CupertinoDialogAction(
                     textStyle: TextStyle(fontWeight: FontWeight.normal),
@@ -225,7 +239,7 @@ class _RocketPageState extends State<RocketPage> with TickerProviderStateMixin {
     stars.removeWhere((star) => !star.isVisible);
 
     stars.addAll(starsRow);
-    print(stars.length);
+    // print(stars.length);
   }
 
   setStarAutoGeneration() {
